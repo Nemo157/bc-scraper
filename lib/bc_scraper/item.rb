@@ -45,7 +45,10 @@ module BandcampScraper
 
     def load!
       puts "Loading #{self.class.name} #{uri}"
-      loaded? || from_hash(normalize_hash(load_aws || load_bandcamp))
+      unless loaded?
+        from_hash(normalize_hash(load_aws || load_bandcamp))
+      end
+      self
     end
 
     def normalize_uri uri
