@@ -27,19 +27,23 @@ define([
 
     Canvas.prototype.addUsers = function (users) {
         _.forEach(users, function (user) {
-            user.displayed = true;
-            user.loaded.subscribe(this.relayout, this);
+            if (!user.displayed) {
+                user.displayed = true;
+                user.loaded.subscribe(this.relayout, this);
+            }
         }, this);
-        this.users(this.users().concat(users));
+        this.users(_.union(this.users(), users));
         this.relayout();
     };
 
     Canvas.prototype.addAlbums = function (albums) {
         _.forEach(albums, function (album) {
-            album.displayed = true;
-            album.loaded.subscribe(this.relayout, this);
+            if (!album.displayed) {
+                album.displayed = true;
+                album.loaded.subscribe(this.relayout, this);
+            }
         }, this);
-        this.albums(this.albums().concat(albums));
+        this.albums(_.union(this.albums(), albums));
         this.relayout();
     };
 
@@ -95,7 +99,7 @@ define([
             }
 
             this.displacement(displacement);
-        }, this), 1000 / 10);
+        }, this), 1000 / 60);
     };
 
     Canvas.prototype.onMouseWheel = function (event) {
