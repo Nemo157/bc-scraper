@@ -1,68 +1,108 @@
 define([
-    'fabric',
+    'knockout',
     'jquery',
     'lodash'
-], function (fabric, $, _) {
-    $('#navbar').css('margin', '0px');
+], function (ko, $, _) {
+    function Canvas() {
+        this.users = ko.observableArray();
+        this.albums = ko.observableArray();
+        this.items = ko.computed(_.bind(function () {
+            return [].concat(this.users()).concat(this.albums());
+        }, this));
+        this.left = ko.observable(0);
+        this.top = ko.observable(0);
+        this.damping = ko.observable(0.5);
+        this.attraction = ko.observable(0.01);
+        this.repulsion = ko.observable(10);
+        this.displacement = ko.observable(0);
+        this.damping.subscribe(this.relayout, this);
+        this.attraction.subscribe(this.relayout, this);
+        this.repulsion.subscribe(this.relayout, this);
+    }
 
-    var canvas = {
-        canvas: new fabric.Canvas('canvas', {
-            selection: false
-        }),
-        add: function (item) {
-            var object = item.getObject();
-            object.set({ hasControls: false, selectable: false });
-            this.canvas.add(object);
-        },
-        updateSize: function () {
-            this.canvas.setWidth(window.innerWidth);
-            this.canvas.setHeight(window.innerHeight - $('#navbar').height());
-        },
-        onMouseDown: function (options) {
-            this.mouseDown = true;
-            this.dragX = options.e.x;
-            this.dragY = options.e.y;
-        },
-        onMouseMove: function (options) {
-            if (this.mouseDown) {
-                if (!this.dragging) {
-                    this.startDragging();
-                }
-                this.pan(this.dragX - options.e.x, this.dragY - options.e.y);
-                this.dragX = options.e.x;
-                this.dragY = options.e.y;
-            }
-        },
-        onMouseUp: function (options) {
-            this.mouseDown = false;
-            if (this.dragging) {
-                this.stopDragging();
-            }
-        },
-        onMouseWheel: function (event) {
-            this.pan(event.originalEvent.deltaX, event.originalEvent.deltaY);
-            event.preventDefault();
-        },
-        startDragging: function () {
-        },
-        stopDragging: function () {
-        },
-        pan: function (dX, dY) {
-            this.canvas.forEachObject(function (object) {
-                object.setLeft(object.getLeft() - dX);
-                object.setTop(object.getTop() - dY);
-            }, this);
-            this.canvas.renderAll();
-        }
+    Canvas.prototype.clear = function () {
+        this.users.removeAll();
+        this.albums.removeAll();
     };
 
-    canvas.canvas.on('mouse:down', _.bind(canvas.onMouseDown, canvas));
-    canvas.canvas.on('mouse:move', _.bind(canvas.onMouseMove, canvas));
-    canvas.canvas.on('mouse:up', _.bind(canvas.onMouseUp, canvas));
+    Canvas.prototype.addUsers = function (users) {
+        _.forEach(users, function (user) {
+            user.displayed = true;
+            user.loaded.subscribe(this.relayout, this);
+        }, this);
+        this.users(this.users().concat(users));
+        this.relayout();
+    };
 
-    canvas.updateSize();
-    $(window).on('mousewheel', _.bind(canvas.onMouseWheel, canvas));
-    $(window).resize(_.bind(canvas.updateSize, canvas));
+    Canvas.prototype.addAlbums = function (albums) {
+        _.forEach(albums, function (album) {
+            album.displayed = true;
+            album.loaded.subscribe(this.relayout, this);
+        }, this);
+        this.albums(this.albums().concat(albums));
+        this.relayout();
+    };
 
-    return canvas;
+    Canvas.prototype.relayout = function () {
+        if (this.interval) {
+            return;
+        }
+
+        this.interval = window.setInterval(_.bind(function () {
+            var items = this.items();
+
+            var repulsion = this.repulsion();
+            var attraction = this.attraction();
+            var damping = this.damping();
+
+            var dsq, coul;
+            _.forEach(items, function (item1) {
+                item1.force.x = item1.force.y = 0;
+                _(items).without(item1).forEach(function (item2) {
+                    dsq = (item1.pos.x - item2.pos.x) * (item1.pos.x - item2.pos.x) + (item1.pos.y - item2.pos.y) * (item1.pos.y - item2.pos.y);
+                    if (dsq === 0) { dsq = 0.001; }
+                    coul = repulsion / dsq;
+                    item1.force.x += coul * (item1.pos.x - item2.pos.x);
+                    item1.force.y += coul * (item1.pos.y - item2.pos.y);
+                });
+            });
+
+            _.forEach(items, function (item1) {
+                _.forEach(item1.related(), function (item2) {
+                    if (item2.displayed) {
+                        item1.force.x += attraction * (item2.pos.x - item1.pos.x);
+                        item1.force.y += attraction * (item2.pos.y - item1.pos.y);
+                        item2.force.x += attraction * (item1.pos.x - item2.pos.x);
+                        item2.force.y += attraction * (item1.pos.y - item2.pos.y);
+                    }
+                });
+            });
+
+
+            var displacement = 0;
+            _.forEach(items, function (item) {
+                item.velocity.x = (item.velocity.x + item.force.x) * damping;
+                item.velocity.y = (item.velocity.y + item.force.y) * damping;
+                displacement += Math.abs(item.velocity.x) + Math.abs(item.velocity.y);
+                item.pos.x += item.velocity.x;
+                item.pos.y += item.velocity.y;
+                item.position(item.pos);
+            });
+
+            if (displacement < 0.05 * items.length) {
+                window.clearInterval(this.interval);
+                this.interval = 0;
+            }
+
+            this.displacement(displacement);
+        }, this), 1000 / 10);
+    };
+
+    Canvas.prototype.onMouseWheel = function (event) {
+        this.left(this.left() - event.originalEvent.deltaX);
+        this.top(this.top() - event.originalEvent.deltaY);
+        event.preventDefault();
+    };
+
+    return Canvas;
 });

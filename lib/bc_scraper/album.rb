@@ -6,7 +6,7 @@ require_relative 'user'
 
 module BandcampScraper
   class Album < Item
-    attr_reader :artist, :title, :users
+    attr_reader :artist, :title, :fans
 
     def aws_table_name
       'bandcamp-album'
@@ -19,7 +19,7 @@ module BandcampScraper
     def from_hash hash
       @artist = hash[:artist]
       @title = hash[:title]
-      @users = (hash[:users] || []).map { |uri| User.new(uri) }
+      @fans = (hash[:fans] || hash[:users] || []).map { |uri| User.new(uri) }
       super
     end
 
@@ -27,13 +27,13 @@ module BandcampScraper
       {
         artist: doc.css('[itemprop="byArtist"]').first.inner_text.strip,
         title: doc.css('.trackTitle').first.inner_text.strip,
-        users: find_users(doc).map { |fan| fan['url'] }
+        fans: find_fans(doc).map { |fan| fan['url'] }
       }
     end
 
-    def find_users doc
-     users = doc.css('script').map { |script| /TralbumFans\.initialize\((null|\[.*?\]), null, (?:true|null)\);/m.match(script.inner_text) }.compact.first[1] 
-     JSON.parse(if users == 'null' then '[]' else users end) || []
+    def find_fans doc
+     fans = doc.css('script').map { |script| /TralbumFans\.initialize\((null|\[.*?\]), null, (?:true|null)\);/m.match(script.inner_text) }.compact.first[1] 
+     JSON.parse(if fans == 'null' then '[]' else fans end) || []
     end
 
     def to_hash include_uri = false
@@ -41,8 +41,8 @@ module BandcampScraper
         hash[:artist] = artist
         hash[:title] = title
         hash[:last_update] = last_update
-        if users.any?
-          hash[:users] = users.map { |user| user.uri }.uniq
+        if fans.any?
+          hash[:fans] = fans.map { |user| user.uri }.uniq
         end
       end
     end

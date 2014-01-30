@@ -11,11 +11,47 @@
     %nav.navbar.navbar-default.navbar-static-top#navbar(role="navigation")
       .navbar-header
         %a.col-lg-2.navbar-brand(href="/") bc-scraper
-        .col-lg-4
+        .col-lg-1
+          %button.btn.btn-default(type="button" data-toggle="collapse" data-target="#settings")
+            %span.glyphicon.glyphicon-cog
+        .col-lg-3
         %form.navbar-form
-          .navbar-form-group.col-lg-6
+          .navbar-form-group.col-lg-6search
             .input-group
-              %input.form-control(type="text" placeholder="Paste bandcamp url")
+              %input.form-control(type="text" placeholder="Paste bandcamp url" data-bind="value: search")
               %span.input-group-btn
-                %button.btn.btn-default(type="submit") Load
-    %canvas#canvas
+                %button.btn.btn-default(type="submit" data-bind="click: doSearch") Load
+    #container(data-bind="with: canvas")
+      .collapse#settings
+        %form.form-horizontal.container(role="form")
+          .row
+            .col-md-2.form-group
+              %label(for="attraction") Attraction
+              %input.form-control.input-sm#attraction(type="number" data-bind="value: attraction")
+            .col-md-1
+            .col-md-2.form-group
+              %label(for="repulsion") Repulsion
+              %input.form-control.input-sm#repulsion(type="number" data-bind="value: repulsion")
+            .col-md-1
+            .col-md-2.form-group
+              %label(for="damping") Damping
+              %input.form-control.input-sm#damping(type="number" data-bind="value: damping")
+            .col-md-1
+            .col-md-2
+              %label(for="displacement") Last Displacement
+              %input.disabled.form-control.input-sm#displacement(type="number" data-bind="value: displacement")
+      #offset(data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }")
+        .items(data-bind="template: { name: 'item-template', foreach: items }")
+
+    %script#item-template(type="text/html")
+      .item(data-bind="style: { position: 'absolute', top: position().y, left: position().x }")
+        %a(data-toggle="tooltip" title="Click to load" data-bind="click: load, visible: !loaded() && !loading() && !errored()" href="#")
+          %i.fa.fa-cloud-download
+        %a(data-toggle="tooltip" title="There was an error loading, click to try again." data-bind="click: load, visible: !loaded() && !loading() && errored()" href="#")
+          %i.fa.fa-exclamation-triangle
+        %span(data-toggle="tooltip" title="Loading..." data-bind="visible: loading()")
+          %i.fa.fa-spin.fa-spinner
+        %a(data-toggle="tooltip" data-bind="attr: { title: header, href: uri }, visible: loaded()")
+          %span.glyphicon(data-bind="css: iconClass")
+        %a(data-toggle="tooltip" data-bind="click: expand, visible: loaded() && !expanded(), attr: { title: related().length + ' ' + relatedType() }" href="#")
+          %span.glyphicon(data-bind="css: relatedClass")

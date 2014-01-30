@@ -14,11 +14,15 @@ module BandcampScraper
     end
 
     get '/users/*' do |uri|
-      json User.new("http://#{uri}").load!.to_hash(true)
+      user = User.new("http://#{uri}").load!
+      user.save! unless user.stored?
+      json user.to_hash(true)
     end
 
     get '/albums/*' do |uri|
-      json Album.new("http://#{uri}").load!.to_hash(true)
+      album = Album.new("http://#{uri}").load!
+      album.save! unless album.stored?
+      json album.to_hash(true)
     end
   end
 end

@@ -1,16 +1,56 @@
 define([
-    'fabric',
+    'require',
+    'knockout',
+    'lodash',
     './item',
-    './canvas'
-], function (fabric, Item, canvas) {
-    return fabric.util.createClass(Item, {
-        loaded: function (data) {
-            this.callSuper('loaded', data);
-            this.object.item(1).setText(data.name);
-            canvas.canvas.renderAll();
-        },
-        getType: function () {
-            return 'users';
-        }
-    });
+    './album'
+], function (require, ko, _, Item, Album) {
+    function User(uri, canvas, x, y) {
+        Item.call(this, uri, canvas, x, y);
+        this.name = ko.observable();
+        this.collected = ko.observableArray();
+        this.related = ko.computed(_.bind(function () { return this.collected(); }, this));
+        this.header = ko.computed(_.bind(function () {
+            return this.loaded() ?  this.name() : "Loading...";
+        }, this));
+        this.relatedClass = ko.computed(function () {
+            if (this.related().length > 20) {
+                return 'glyphicon-th';
+            } else {
+                return 'glyphicon-th-large';
+            }
+        }, this);
+        this.relatedType = ko.computed(function () {
+            return 'album' + (this.related().length > 1 ? 's' : '');
+        }, this);
+        this.iconClass = 'glyphicon-user';
+    }
+
+    User.prototype = new Item();
+    User.prototype.constructor = User;
+
+    User.prototype.onLoaded = function (data) {
+        Item.prototype.onLoaded.call(this, data);
+        this.name(data.name);
+        this.collected(_.map(data.collected, _.bind(this.createAlbum, this)));
+    };
+
+    User.prototype.expand = function () {
+        _.forEach(this.collected(), function (album) {
+            album.load();
+        }, this);
+        this.canvas.addAlbums(this.collected());
+        this.expanded(true);
+    };
+
+    User.prototype.createAlbum = function (uri) {
+        if (!Album) { Album = require('./album'); }
+        return _.find(this.canvas.albums(), function (album) { return album.uri() === uri; }) || new Album(uri, this.canvas, this.position().x, this.position().y);
+    };
+
+    User.prototype.getType = function () {
+        return 'user';
+    };
+
+    return User;
 });

@@ -4,11 +4,12 @@ requirejs.config({
         bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min',
         lodash: '//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min',
         fabric: '//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min',
-        postal: '//cdnjs.cloudflare.com/ajax/libs/postal.js/0.8.5/postal.min'
+        postal: '//cdnjs.cloudflare.com/ajax/libs/postal.js/0.8.5/postal.min',
+        knockout: '//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min'
     },
     shim: {
         bootstrap: {
-            deps: 'jquery'
+            deps: ['jquery']
         },
         fabric: {
             exports: 'fabric'

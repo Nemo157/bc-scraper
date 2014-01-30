@@ -1,31 +1,43 @@
 define([
-    'fabric',
+    'knockout',
     'jquery',
     'lodash'
-], function (fabric, $, _) {
-    return fabric.util.createClass({
-        initialize: function (uri) {
-            this.uri = uri;
-            this.object = new fabric.Group([
-                new fabric.Rect({
-                    width: 300,
-                    height: 200,
-                    fill: 'red'
-                }),
-                new fabric.Text(uri, {
-                    fontSize: 30
-                }),
-            ]);
-        },
-        load: function () {
-            $.getJSON('/' + this.getType() + '/' + this.uri)
-             .done(_.bind(this.loaded, this));
-        },
-        loaded: function (data) {
-            this.data = data;
-        },
-        getObject: function () {
-            return this.object;
-        }
-    });
+], function (ko, $, _) {
+    function Item(uri, canvas, x, y) {
+        this.canvas = canvas;
+        this.uri = ko.observable(uri);
+        this.loaded = ko.observable(false);
+        this.loading = ko.observable(false);
+        this.errored = ko.observable(false);
+        this.expanded = ko.observable(false);
+        this.pos = {
+            x: Math.random() * 100 - 50 + (x || 0),
+            y: Math.random() * 100 - 50 + (y || 0)
+        };
+        this.position = ko.observable(this.pos);
+        this.force = { x: 0, y: 0 };
+        this.velocity = { x: 0, y: 0 };
+    }
+
+    Item.prototype.load = function () {
+        if (!this.loaded() && !this.loading()) {
+            this.loading(true);
+            $.getJSON('/' + this.getType() + 's/' + this.uri().replace(/^https?:\/\//, ''))
+             .done(_.bind(this.onLoaded, this))
+             .fail(_.bind(this.onError, this));
+         }
+    };
+
+    Item.prototype.onLoaded = function (data) {
+        this.loading(false);
+        this.loaded(true);
+        this.uri(data.uri);
+    };
+
+    Item.prototype.onError = function () {
+        this.loading(false);
+        this.errored(true);
+    };
+
+    return Item;
 });

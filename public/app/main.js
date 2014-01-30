@@ -1,10 +1,21 @@
 define([
+    'bootstrap',
+    'knockout',
     './canvas',
     './user'
-], function (canvas, User) {
-    var user;
-    canvas.add(user = new User('bandcamp.com/joshuajordan'));
-    canvas.canvas.fxCenterObjectH(user.getObject());
-    canvas.canvas.fxCenterObjectV(user.getObject());
-    user.load();
+], function (bootstrap, ko, Canvas, User) {
+    var app = {
+        canvas: new Canvas(),
+        search: ko.observable(),
+
+        doSearch: function () {
+            var user = new User(this.search(), this.canvas, 700, 300);
+            this.canvas.clear();
+            this.canvas.addUsers([user]);
+            user.load();
+        }
+    };
+
+    $(window).on('mousewheel', _.bind(app.canvas.onMouseWheel, app.canvas));
+    ko.applyBindings(app);
 });
