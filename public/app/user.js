@@ -5,8 +5,8 @@ define([
     './item',
     './album'
 ], function (require, ko, _, Item, Album) {
-    function User(uri, canvas, x, y) {
-        Item.call(this, uri, canvas, x, y);
+    function User(uri, canvas) {
+        Item.call(this, uri, canvas);
         this.name = ko.observable();
         this.collected = ko.observableArray();
         this.related = ko.computed(_.bind(function () { return this.collected(); }, this));

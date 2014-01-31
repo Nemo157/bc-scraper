@@ -9,7 +9,8 @@ define([
         search: ko.observable(),
 
         doSearch: function () {
-            var user = new User(this.search(), this.canvas, 700, 300);
+            var user = new User(this.search(), this.canvas);
+            user.moveNear({ x: 700, y: 300 });
             this.canvas.clear();
             this.canvas.addUsers([user]);
             user.load();

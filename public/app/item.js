@@ -10,13 +10,10 @@ define([
         this.loading = ko.observable(false);
         this.errored = ko.observable(false);
         this.displayed = ko.observable(false);
-        this.pos = {
-            x: 0,
-            y: 0
-        };
-        this.position = ko.observable(this.pos);
+        this.pos = { x: 0, y: 0 };
         this.force = { x: 0, y: 0 };
         this.velocity = { x: 0, y: 0 };
+        this.position = ko.observable(this.pos);
     }
 
     Item.prototype.load = function () {
