@@ -9,7 +9,7 @@ define([
         this.loaded = ko.observable(false);
         this.loading = ko.observable(false);
         this.errored = ko.observable(false);
-        this.expanded = ko.observable(false);
+        this.displayed = ko.observable(false);
         this.pos = {
             x: Math.random() * 100 - 50 + (x || 0),
             y: Math.random() * 100 - 50 + (y || 0)

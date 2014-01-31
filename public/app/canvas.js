@@ -27,8 +27,8 @@ define([
 
     Canvas.prototype.addUsers = function (users) {
         _.forEach(users, function (user) {
-            if (!user.displayed) {
-                user.displayed = true;
+            if (!user.displayed()) {
+                user.displayed(true);
                 user.loaded.subscribe(this.relayout, this);
             }
         }, this);
@@ -38,8 +38,8 @@ define([
 
     Canvas.prototype.addAlbums = function (albums) {
         _.forEach(albums, function (album) {
-            if (!album.displayed) {
-                album.displayed = true;
+            if (!album.displayed()) {
+                album.displayed(true);
                 album.loaded.subscribe(this.relayout, this);
             }
         }, this);
@@ -73,7 +73,7 @@ define([
 
             _.forEach(items, function (item1) {
                 _.forEach(item1.related(), function (item2) {
-                    if (item2.displayed) {
+                    if (item2.displayed()) {
                         item1.force.x += attraction * (item2.pos.x - item1.pos.x);
                         item1.force.y += attraction * (item2.pos.y - item1.pos.y);
                         item2.force.x += attraction * (item1.pos.x - item2.pos.x);

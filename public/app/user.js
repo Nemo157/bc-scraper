@@ -20,8 +20,11 @@ define([
                 return 'glyphicon-th-large';
             }
         }, this);
+        this.relatedUndisplayed = ko.computed(function () {
+            return _.filter(this.related(), function (album) { return !album.displayed(); });
+        }, this);
         this.relatedType = ko.computed(function () {
-            return 'album' + (this.related().length > 1 ? 's' : '');
+            return 'album' + (this.relatedUndisplayed().length > 1 ? 's' : '');
         }, this);
         this.iconClass = 'glyphicon-user';
     }
@@ -40,7 +43,6 @@ define([
             album.load();
         }, this);
         this.canvas.addAlbums(this.collected());
-        this.expanded(true);
     };
 
     User.prototype.createAlbum = function (uri) {

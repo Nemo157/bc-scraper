@@ -21,8 +21,11 @@ define([
                 return 'glyphicon-th-large';
             }
         }, this);
+        this.relatedUndisplayed = ko.computed(function () {
+            return _.filter(this.related(), function (fan) { return !fan.displayed(); });
+        }, this);
         this.relatedType = ko.computed(function () {
-            return 'fan' + (this.related().length > 1 ? 's' : '');
+            return 'fan' + (this.relatedUndisplayed().length > 1 ? 's' : '');
         }, this);
         this.iconClass = 'glyphicon-headphones';
     }
@@ -42,7 +45,6 @@ define([
             user.load();
         }, this);
         this.canvas.addUsers(this.fans());
-        this.expanded(true);
     };
 
     Album.prototype.createUser = function (uri) {
