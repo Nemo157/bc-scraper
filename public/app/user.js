@@ -40,6 +40,7 @@ define([
 
     User.prototype.expand = function () {
         _.forEach(this.collected(), function (album) {
+            album.moveNear(this.pos);
             album.load();
         }, this);
         this.canvas.addAlbums(this.collected());
@@ -47,7 +48,7 @@ define([
 
     User.prototype.createAlbum = function (uri) {
         if (!Album) { Album = require('./album'); }
-        return _.find(this.canvas.albums(), function (album) { return album.uri() === uri; }) || new Album(uri, this.canvas, this.position().x, this.position().y);
+        return _.find(this.canvas.albums(), function (album) { return album.uri() === uri; }) || new Album(uri, this.canvas);
     };
 
     User.prototype.getType = function () {

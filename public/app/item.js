@@ -3,7 +3,7 @@ define([
     'jquery',
     'lodash'
 ], function (ko, $, _) {
-    function Item(uri, canvas, x, y) {
+    function Item(uri, canvas) {
         this.canvas = canvas;
         this.uri = ko.observable(uri);
         this.loaded = ko.observable(false);
@@ -11,8 +11,8 @@ define([
         this.errored = ko.observable(false);
         this.displayed = ko.observable(false);
         this.pos = {
-            x: Math.random() * 100 - 50 + (x || 0),
-            y: Math.random() * 100 - 50 + (y || 0)
+            x: 0,
+            y: 0
         };
         this.position = ko.observable(this.pos);
         this.force = { x: 0, y: 0 };
@@ -37,6 +37,11 @@ define([
     Item.prototype.onError = function () {
         this.loading(false);
         this.errored(true);
+    };
+
+    Item.prototype.moveNear = function (pos) {
+        this.pos.x = Math.random() * 100 - 50 + pos.x;
+        this.pos.y = Math.random() * 100 - 50 + pos.y;
     };
 
     return Item;

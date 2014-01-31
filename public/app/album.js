@@ -42,6 +42,7 @@ define([
 
     Album.prototype.expand = function () {
         _.forEach(this.fans(), function (user) {
+            user.moveNear(this.pos);
             user.load();
         }, this);
         this.canvas.addUsers(this.fans());
@@ -51,7 +52,7 @@ define([
         if (!User) {
             User = require('./user');
         }
-        return _.find(this.canvas.users(), function (user) { return user.uri() === uri; }) || new User(uri, this.canvas, this.position().x, this.position().y);
+        return _.find(this.canvas.users(), function (user) { return user.uri() === uri; }) || new User(uri, this.canvas);
     };
 
     Album.prototype.getType = function () {
