@@ -11,11 +11,16 @@ define([
         }, this));
         this.left = ko.observable(0);
         this.top = ko.observable(0);
-        this.damping = ko.observable(0.5);
-        this.attraction = ko.observable(0.01);
-        this.repulsion = ko.observable(10);
-        this.displacement = ko.observable(0);
-        window.requestAnimationFrame(_.bind(this.relayout, this));
+        this.settings = {
+            damping: ko.observable(0.5),
+            attraction: ko.observable(0.01),
+            repulsion: ko.observable(10),
+            displacement: ko.observable(0),
+            updateLayout: ko.observable(true)
+        };
+        this.nextLayout = this.repel;
+        this.boundLayout = _.bind(this.relayout, this);
+        window.requestAnimationFrame(this.boundLayout);
     }
 
     Canvas.prototype.clear = function () {
@@ -40,30 +45,41 @@ define([
     };
 
     Canvas.prototype.relayout = function () {
+        if (this.settings.updateLayout()) {
+            this.nextLayout = this.nextLayout();
+        }
+        window.requestAnimationFrame(this.boundLayout);
+    };
+
+    Canvas.prototype.repel = function () {
         var items = this.items();
-        var users = this.users();
-        var albums = this.albums();
 
-        var repulsion = this.repulsion();
-        var attraction = this.attraction();
-        var damping = this.damping();
+        var repulsion = this.settings.repulsion();
 
-        var dsq, coul, i, j, item1, item2;
-        for (i = 0; i < items.length; i++) {
-            item1 = items[i];
+        for (var i = 0; i < items.length; i++) {
+            var item1 = items[i];
             item1.force.x = item1.force.y = 0;
-            for (j = 0; j < items.length; j++) {
+            for (var j = 0; j < items.length; j++) {
                 if (i === j) continue;
-                item2 = items[j];
-                dsq = (item1.pos.x - item2.pos.x) * (item1.pos.x - item2.pos.x) + (item1.pos.y - item2.pos.y) * (item1.pos.y - item2.pos.y);
+                var item2 = items[j];
+                var dsq = (item1.pos.x - item2.pos.x) * (item1.pos.x - item2.pos.x) + (item1.pos.y - item2.pos.y) * (item1.pos.y - item2.pos.y);
                 if (dsq === 0) { dsq = 0.001; }
-                coul = repulsion / dsq;
+                var coul = repulsion / dsq;
                 item1.force.x += coul * (item1.pos.x - item2.pos.x);
                 item1.force.y += coul * (item1.pos.y - item2.pos.y);
             }
         }
 
-        var related;
+        return this.attract;
+    };
+
+    Canvas.prototype.attract = function () {
+        var users = this.users();
+        var albums = this.albums();
+
+        var attraction = this.settings.attraction();
+
+        var i, j, item1, item2, related;
         for (i = 0; i < users.length; i++) {
             item1 = users[i];
             related = item1.relatedDisplayed();
@@ -90,11 +106,19 @@ define([
             }
         }
 
-        var item;
+        return this.displace;
+    };
+
+    Canvas.prototype.displace = function () {
+        var items = this.items();
+
+        var damping = this.settings.damping();
+
         var displacement = 0;
         var temp_pos = { x: 0, y: 0 };
-        for (i = 0; i < items.length; i++) {
-            item = items[i];
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
             temp_pos.x = item.pos.x;
             temp_pos.y = item.pos.y;
             item.pos.x += (item.pos.x - item.last_pos.x) * damping + item.force.x;
@@ -105,8 +129,9 @@ define([
             item.position(item.pos);
         }
 
-        this.displacement(displacement);
-        window.requestAnimationFrame(_.bind(this.relayout, this));
+        this.settings.displacement(displacement);
+
+        return this.repel;
     };
 
     Canvas.prototype.onMouseWheel = function (event) {

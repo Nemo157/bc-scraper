@@ -21,27 +21,37 @@
               %input.form-control(type="text" placeholder="Paste bandcamp url" data-bind="value: search")
               %span.input-group-btn
                 %button.btn.btn-default(type="submit" data-bind="click: doSearch") Load
-    #container(data-bind="with: canvas")
-      .collapse#settings
-        %form.form-horizontal.container(role="form")
-          .row
-            .col-md-2.form-group
-              %label(for="attraction") Attraction
-              %input.form-control.input-sm#attraction(type="number" data-bind="value: attraction")
-            .col-md-1
-            .col-md-2.form-group
-              %label(for="repulsion") Repulsion
-              %input.form-control.input-sm#repulsion(type="number" data-bind="value: repulsion")
-            .col-md-1
-            .col-md-2.form-group
-              %label(for="damping") Damping
-              %input.form-control.input-sm#damping(type="number" data-bind="value: damping")
-            .col-md-1
-            .col-md-2
-              %label(for="displacement") Last Displacement
-              %input.disabled.form-control.input-sm#displacement(type="number" data-bind="value: displacement")
+    #container(data-bind="template: { name: 'canvas-template', data: canvas }")
+
+
+    %script#canvas-template(type="text/html")
+      .collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
       #offset(data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }")
         .items(data-bind="template: { name: 'item-template', foreach: items }")
+
+    %script#settings-template(type="text/html")
+      %form.form-horizontal.container(role="form")
+        .row
+          .col-md-2.form-group
+            %label(for="attraction") Attraction
+            %input.form-control.input-sm#attraction(type="number" data-bind="value: attraction")
+          .col-md-1
+          .col-md-2.form-group
+            %label(for="repulsion") Repulsion
+            %input.form-control.input-sm#repulsion(type="number" data-bind="value: repulsion")
+          .col-md-1
+          .col-md-2.form-group
+            %label(for="damping") Damping
+            %input.form-control.input-sm#damping(type="number" data-bind="value: damping")
+          .col-md-1
+          .col-md-2
+            %label
+              %input.form-control.input-sm(type="checkbox" data-bind="value: updateLayout") Update Layout
+        .row
+          .col-md-1
+          .col-md-2
+            %label(for="displacement") Last Displacement
+            %input.disabled.form-control.input-sm#displacement(type="number" data-bind="value: displacement")
 
     %script#item-template(type="text/html")
       .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + position().x + 'px, ' + position().y + 'px, 0)' }")
