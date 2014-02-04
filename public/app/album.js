@@ -7,8 +7,9 @@ define([
         Item.call(this, uri, cache, canvas);
         this.artist = ko.observable();
         this.title = ko.observable();
-        this.fans = ko.observableArray();
-        this.related = ko.computed(_.bind(function () { return this.fans(); }, this));
+        this.fanIds = ko.observableArray();
+        this.fans = this.fanIds.map(_.bind(this.cache.createUser, this.cache, this.canvas));
+        this.related = this.fans.map(_.identity);
         this.header = ko.computed(function () {
             return this.loaded() ?  this.artist() + ' | ' + this.title() : "Loading...";
         }, this);
@@ -19,12 +20,8 @@ define([
                 return 'glyphicon-th-large';
             }
         }, this);
-        this.relatedDisplayed = ko.computed(function () {
-            return _.filter(this.related(), function (fan) { return fan.displayed(); });
-        }, this);
-        this.relatedUndisplayed = ko.computed(function () {
-            return _.filter(this.related(), function (fan) { return !fan.displayed(); });
-        }, this);
+        this.relatedDisplayed = this.related.filter(function (item) { return item.displayed(); });
+        this.relatedUndisplayed = this.related.filter(function (item) { return !item.displayed(); });
         this.relatedType = ko.computed(function () {
             return 'fan' + (this.relatedUndisplayed().length > 1 ? 's' : '');
         }, this);
@@ -38,7 +35,7 @@ define([
         Item.prototype.onLoaded.call(this, data);
         this.artist(data.artist);
         this.title(data.title);
-        this.fans(_.map(data.fans, _.bind(this.cache.createUser, this.cache, this.canvas)));
+        ko.utils.arrayPushAll(this.fanIds, data.fans);
     };
 
     Album.prototype.expand = function () {

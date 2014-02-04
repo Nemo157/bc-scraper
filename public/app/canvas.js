@@ -19,25 +19,19 @@ define([
     }
 
     Canvas.prototype.clear = function () {
-        _.forEach(this.items(), function (item) {
-            item.displayed(false);
-        }, this);
+        _.forEach(this.items(), function (item) { item.displayed(false); }, this);
         this.users.removeAll();
         this.albums.removeAll();
     };
 
     Canvas.prototype.addUsers = function (users) {
-        _.forEach(users, function (user) {
-            user.displayed(true);
-        }, this);
-        this.users(_.union(this.users(), users));
+        _.forEach(users, function (user) { user.displayed(true); }, this);
+        ko.utils.arrayPushAll(this.users, users);
     };
 
     Canvas.prototype.addAlbums = function (albums) {
-        _.forEach(albums, function (album) {
-            album.displayed(true);
-        }, this);
-        this.albums(_.union(this.albums(), albums));
+        _.forEach(albums, function (album) { album.displayed(true); }, this);
+        ko.utils.arrayPushAll(this.albums, albums);
     };
 
     Canvas.prototype.relayout = function () {

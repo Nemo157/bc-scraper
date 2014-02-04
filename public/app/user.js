@@ -6,8 +6,9 @@ define([
     function User(uri, cache, canvas) {
         Item.call(this, uri, cache, canvas);
         this.name = ko.observable();
-        this.collected = ko.observableArray();
-        this.related = ko.computed(_.bind(function () { return this.collected(); }, this));
+        this.collectedIds = ko.observableArray();
+        this.collected = this.collectedIds.map(_.bind(this.cache.createAlbum, this.cache, this.canvas));
+        this.related = this.collected.map(_.identity);
         this.header = ko.computed(_.bind(function () {
             return this.loaded() ?  this.name() : "Loading...";
         }, this));
@@ -18,12 +19,8 @@ define([
                 return 'glyphicon-th-large';
             }
         }, this);
-        this.relatedDisplayed = ko.computed(function () {
-            return _.filter(this.related(), function (album) { return album.displayed(); });
-        }, this);
-        this.relatedUndisplayed = ko.computed(function () {
-            return _.filter(this.related(), function (album) { return !album.displayed(); });
-        }, this);
+        this.relatedDisplayed = this.related.filter(function (item) { return item.displayed(); });
+        this.relatedUndisplayed = this.related.filter(function (item) { return !item.displayed(); });
         this.relatedType = ko.computed(function () {
             return 'album' + (this.relatedUndisplayed().length > 1 ? 's' : '');
         }, this);
@@ -36,7 +33,7 @@ define([
     User.prototype.onLoaded = function (data) {
         Item.prototype.onLoaded.call(this, data);
         this.name(data.name);
-        this.collected(_.map(data.collected, _.bind(this.cache.createAlbum, this.cache, this.canvas)));
+        ko.utils.arrayPushAll(this.collectedIds, data.collected);
     };
 
     User.prototype.expand = function () {
