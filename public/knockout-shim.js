@@ -1,5 +1,5 @@
 define([
-    'knockout-lib',
+    'knockout',
     'knockout-projections'
 ], function (
     ko
