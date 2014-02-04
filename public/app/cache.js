@@ -4,30 +4,28 @@ define([
     './user',
 ], function (_, Album, User) {
     function Cache() {
-        this.albums = [];
-        this.users = [];
+        this.collection = {};
     }
 
-    Cache.prototype.createAlbum = function (canvas, uri) {
-        var album = _.find(this.albums, function (album) { return album.uri() === uri; });
-
-        if (!album) {
-            album = new Album(uri, this, canvas);
-            this.albums.push(album);
+    Cache.prototype.createItem = function (constructor, uri, canvas) {
+        if (!this.collection.hasOwnProperty(uri)) {
+            this.collection[uri] = new constructor(uri, this, canvas);
         }
 
-        return album;
+        return this.collection[uri];
+    };
+
+    Cache.prototype.updateUri = function (item, oldUri, newUri) {
+        delete this.collection[oldUri];
+        this.collection[newUri] = item;
+    };
+
+    Cache.prototype.createAlbum = function (canvas, uri) {
+        return this.createItem(Album, uri, canvas);
     };
 
     Cache.prototype.createUser = function (canvas, uri) {
-        var user = _.find(this.users, function (user) { return user.uri() === uri; });
-
-        if (!user) {
-            user = new User(uri, this, canvas);
-            this.users.push(user);
-        }
-
-        return user;
+        return this.createItem(User, uri, canvas);
     };
 
     return Cache;

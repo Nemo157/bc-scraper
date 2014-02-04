@@ -30,7 +30,10 @@ define([
     Item.prototype.onLoaded = function (data) {
         this.loading(false);
         this.loaded(true);
-        this.uri(data.uri);
+        if (this.uri() !== data.uri) {
+            this.cache.updateUri(this, this.uri(), data.uri);
+            this.uri(data.uri);
+        }
     };
 
     Item.prototype.onError = function () {

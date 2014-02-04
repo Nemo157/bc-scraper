@@ -35,7 +35,7 @@ define([
         Item.prototype.onLoaded.call(this, data);
         this.artist(data.artist);
         this.title(data.title);
-        ko.utils.arrayPushAll(this.fanIds, data.fans);
+        this.fanIds(data.fans);
     };
 
     Album.prototype.expand = function () {

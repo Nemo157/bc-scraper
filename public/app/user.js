@@ -33,7 +33,7 @@ define([
     User.prototype.onLoaded = function (data) {
         Item.prototype.onLoaded.call(this, data);
         this.name(data.name);
-        ko.utils.arrayPushAll(this.collectedIds, data.collected);
+        this.collectedIds(data.collected);
     };
 
     User.prototype.expand = function () {
