@@ -55,6 +55,7 @@ define([
         this.interval = window.setInterval(_.bind(function () {
             var items = this.items();
             var users = this.users();
+            var albums = this.albums();
 
             var repulsion = this.repulsion();
             var attraction = this.attraction();
@@ -78,10 +79,22 @@ define([
             var related;
             for (i = 0; i < users.length; i++) {
                 item1 = users[i];
-                related = item1.related();
+                related = item1.relatedDisplayed();
                 for (j = 0; j < related.length; j++) {
                     item2 = related[j];
-                    if (item2.displayed()) {
+                    item1.force.x += attraction * (item2.pos.x - item1.pos.x);
+                    item1.force.y += attraction * (item2.pos.y - item1.pos.y);
+                    item2.force.x += attraction * (item1.pos.x - item2.pos.x);
+                    item2.force.y += attraction * (item1.pos.y - item2.pos.y);
+                }
+            }
+
+            for (i = 0; i < albums.length; i++) {
+                item1 = albums[i];
+                related = item1.relatedDisplayed();
+                for (j = 0; j < related.length; j++) {
+                    item2 = related[j];
+                    if (!item2.loaded()) {
                         item1.force.x += attraction * (item2.pos.x - item1.pos.x);
                         item1.force.y += attraction * (item2.pos.y - item1.pos.y);
                         item2.force.x += attraction * (item1.pos.x - item2.pos.x);
@@ -89,7 +102,6 @@ define([
                     }
                 }
             }
-
 
             var item;
             var displacement = 0;

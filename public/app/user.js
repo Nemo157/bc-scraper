@@ -20,6 +20,9 @@ define([
                 return 'glyphicon-th-large';
             }
         }, this);
+        this.relatedDisplayed = ko.computed(function () {
+            return _.filter(this.related(), function (album) { return album.displayed(); });
+        }, this);
         this.relatedUndisplayed = ko.computed(function () {
             return _.filter(this.related(), function (album) { return !album.displayed(); });
         }, this);
