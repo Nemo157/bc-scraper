@@ -59,39 +59,48 @@ define([
             var attraction = this.attraction();
             var damping = this.damping();
 
-            var dsq, coul;
-            _.forEach(items, function (item1) {
+            var dsq, coul, i, j, item1, item2;
+            for (i = 0; i < items.length; i++) {
+                item1 = items[i];
                 item1.force.x = item1.force.y = 0;
-                _(items).without(item1).forEach(function (item2) {
+                for (j = 0; j < items.length; j++) {
+                    if (i === j) continue;
+                    item2 = items[j];
                     dsq = (item1.pos.x - item2.pos.x) * (item1.pos.x - item2.pos.x) + (item1.pos.y - item2.pos.y) * (item1.pos.y - item2.pos.y);
                     if (dsq === 0) { dsq = 0.001; }
                     coul = repulsion / dsq;
                     item1.force.x += coul * (item1.pos.x - item2.pos.x);
                     item1.force.y += coul * (item1.pos.y - item2.pos.y);
-                });
-            });
+                }
+            }
 
-            _.forEach(items, function (item1) {
-                _.forEach(item1.related(), function (item2) {
+            var related;
+            for (i = 0; i < items.length; i++) {
+                item1 = items[i];
+                related = item1.related();
+                for (j = 0; j < related.length; j++) {
+                    item2 = related[j];
                     if (item2.displayed()) {
                         item1.force.x += attraction * (item2.pos.x - item1.pos.x);
                         item1.force.y += attraction * (item2.pos.y - item1.pos.y);
                         item2.force.x += attraction * (item1.pos.x - item2.pos.x);
                         item2.force.y += attraction * (item1.pos.y - item2.pos.y);
                     }
-                });
-            });
+                }
+            }
 
 
+            var item;
             var displacement = 0;
-            _.forEach(items, function (item) {
+            for (i = 0; i < items.length; i++) {
+                item = items[i];
                 item.velocity.x = (item.velocity.x + item.force.x) * damping;
                 item.velocity.y = (item.velocity.y + item.force.y) * damping;
                 displacement += Math.abs(item.velocity.x) + Math.abs(item.velocity.y);
                 item.pos.x += item.velocity.x;
                 item.pos.y += item.velocity.y;
                 item.position(item.pos);
-            });
+            }
 
             if (displacement < 0.05 * items.length) {
                 window.clearInterval(this.interval);
