@@ -53,5 +53,5 @@
           %i.fa.fa-spin.fa-spinner
         %a(data-toggle="tooltip" data-bind="attr: { title: header, href: uri }, visible: loaded()")
           %span.glyphicon(data-bind="css: iconClass")
-        %a(data-toggle="tooltip" data-bind="click: expand, visible: loaded() && relatedUndisplayed().length > 0, attr: { title: relatedUndisplayed().length + ' ' + relatedType() }" href="#")
+        %a(data-toggle="tooltip" data-bind="click: expand, visible: loaded() && relatedUndisplayed().length > 0, attr: { title: relatedUndisplayed().length + ' ' + relatedTypePluralized() }" href="#")
           %span.glyphicon(data-bind="css: relatedClass")

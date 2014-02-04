@@ -24,6 +24,11 @@ define([
         this.albums.removeAll();
     };
 
+    Canvas.prototype.add = function (items) {
+        this.addUsers(_.where(items, { type: 'user' }));
+        this.addAlbums(_.where(items, { type: 'album' }));
+    };
+
     Canvas.prototype.addUsers = function (users) {
         _.forEach(users, function (user) { user.displayed(true); }, this);
         ko.utils.arrayPushAll(this.users, users);
