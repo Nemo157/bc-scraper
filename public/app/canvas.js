@@ -115,6 +115,7 @@ define([
         var damping = this.settings.damping();
 
         var displacement = 0;
+        var localDisplacement = 0;
         var temp_pos = { x: 0, y: 0 };
 
         for (var i = 0; i < items.length; i++) {
@@ -123,10 +124,13 @@ define([
             temp_pos.y = item.pos.y;
             item.pos.x += (item.pos.x - item.last_pos.x) * damping + item.force.x;
             item.pos.y += (item.pos.y - item.last_pos.y) * damping + item.force.y;
-            displacement += Math.abs(item.pos.x - temp_pos.x) + Math.abs(item.pos.y - temp_pos.y);
+            localDisplacement = Math.abs(item.pos.x - temp_pos.x) + Math.abs(item.pos.y - temp_pos.y);
+            displacement += localDisplacement;
             item.last_pos.x = temp_pos.x;
             item.last_pos.y = temp_pos.y;
-            item.position(item.pos);
+            if (localDisplacement > 0.5) {
+                item.position(item.pos);
+            }
         }
 
         this.settings.displacement(displacement);
