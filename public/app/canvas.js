@@ -54,6 +54,7 @@ define([
 
         this.interval = window.setInterval(_.bind(function () {
             var items = this.items();
+            var users = this.users();
 
             var repulsion = this.repulsion();
             var attraction = this.attraction();
@@ -75,8 +76,8 @@ define([
             }
 
             var related;
-            for (i = 0; i < items.length; i++) {
-                item1 = items[i];
+            for (i = 0; i < users.length; i++) {
+                item1 = users[i];
                 related = item1.related();
                 for (j = 0; j < related.length; j++) {
                     item2 = related[j];
