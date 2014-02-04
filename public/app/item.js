@@ -61,8 +61,10 @@ define([
 
     Item.prototype.expand = function () {
         this.related().forEach(function (item) {
-            item.moveNear(this.pos);
-            item.load();
+            if (!item.displayed()) {
+                item.moveNear(this.pos);
+                item.load();
+            }
         }, this);
         this.canvas.add(this.related());
     };
