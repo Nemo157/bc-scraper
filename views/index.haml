@@ -44,7 +44,7 @@
         .items(data-bind="template: { name: 'item-template', foreach: items }")
 
     %script#item-template(type="text/html")
-      .item(data-bind="style: { position: 'absolute', top: position().y, left: position().x }")
+      .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + position().x + 'px, ' + position().y + 'px, 0)' }")
         %a(data-toggle="tooltip" title="Click to load" data-bind="click: load, visible: !loaded() && !loading() && !errored()" href="#")
           %i.fa.fa-cloud-download
         %a(data-toggle="tooltip" title="There was an error loading, click to try again." data-bind="click: load, visible: !loaded() && !loading() && errored()" href="#")
