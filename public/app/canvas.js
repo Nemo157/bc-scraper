@@ -92,13 +92,16 @@ define([
 
             var item;
             var displacement = 0;
+            var temp_pos = { x: 0, y: 0 };
             for (i = 0; i < items.length; i++) {
                 item = items[i];
-                item.velocity.x = (item.velocity.x + item.force.x) * damping;
-                item.velocity.y = (item.velocity.y + item.force.y) * damping;
-                displacement += Math.abs(item.velocity.x) + Math.abs(item.velocity.y);
-                item.pos.x += item.velocity.x;
-                item.pos.y += item.velocity.y;
+                temp_pos.x = item.pos.x;
+                temp_pos.y = item.pos.y;
+                item.pos.x += (item.pos.x - item.last_pos.x) * damping + item.force.x;
+                item.pos.y += (item.pos.y - item.last_pos.y) * damping + item.force.y;
+                displacement += Math.abs(item.pos.x - temp_pos.x) + Math.abs(item.pos.y - temp_pos.y);
+                item.last_pos.x = temp_pos.x;
+                item.last_pos.y = temp_pos.y;
                 item.position(item.pos);
             }
 

@@ -11,6 +11,7 @@ define([
         this.errored = ko.observable(false);
         this.displayed = ko.observable(false);
         this.pos = { x: 0, y: 0 };
+        this.last_pos = { x: 0, y: 0 };
         this.force = { x: 0, y: 0 };
         this.velocity = { x: 0, y: 0 };
         this.position = ko.observable(this.pos);
@@ -37,8 +38,8 @@ define([
     };
 
     Item.prototype.moveNear = function (pos) {
-        this.pos.x = Math.random() * 100 - 50 + pos.x;
-        this.pos.y = Math.random() * 100 - 50 + pos.y;
+        this.last_pos.x = this.pos.x = Math.random() * 100 - 50 + pos.x;
+        this.last_pos.y = this.pos.y = Math.random() * 100 - 50 + pos.y;
     };
 
     return Item;
