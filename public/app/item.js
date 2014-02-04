@@ -3,7 +3,8 @@ define([
     'jquery',
     'lodash'
 ], function (ko, $, _) {
-    function Item(uri, canvas) {
+    function Item(uri, cache, canvas) {
+        this.cache = cache;
         this.canvas = canvas;
         this.uri = ko.observable(uri);
         this.loaded = ko.observable(false);

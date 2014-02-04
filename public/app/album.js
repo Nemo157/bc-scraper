@@ -1,12 +1,10 @@
 define([
-    'require',
     'knockout',
     'lodash',
-    './item',
-    './user'
-], function (require, ko, _, Item, User) {
-    function Album(uri, canvas) {
-        Item.call(this, uri, canvas);
+    './item'
+], function (ko, _, Item) {
+    function Album(uri, cache, canvas) {
+        Item.call(this, uri, cache, canvas);
         this.artist = ko.observable();
         this.title = ko.observable();
         this.fans = ko.observableArray();
@@ -40,7 +38,7 @@ define([
         Item.prototype.onLoaded.call(this, data);
         this.artist(data.artist);
         this.title(data.title);
-        this.fans(_.map(data.fans, this.createUser, this));
+        this.fans(_.map(data.fans, _.bind(this.cache.createUser, this.cache, this.canvas)));
     };
 
     Album.prototype.expand = function () {
@@ -49,13 +47,6 @@ define([
             user.load();
         }, this);
         this.canvas.addUsers(this.fans());
-    };
-
-    Album.prototype.createUser = function (uri) {
-        if (!User) {
-            User = require('./user');
-        }
-        return _.find(this.canvas.users(), function (user) { return user.uri() === uri; }) || new User(uri, this.canvas);
     };
 
     Album.prototype.getType = function () {

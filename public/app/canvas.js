@@ -21,6 +21,13 @@ define([
     }
 
     Canvas.prototype.clear = function () {
+        _.forEach(this.items(), function (item) {
+            if (item.displayed()) {
+                item.displayed(false);
+                item.relayoutSubscription.dispose();
+                item.relayoutSubscription = null;
+            }
+        }, this);
         this.users.removeAll();
         this.albums.removeAll();
     };
@@ -29,7 +36,7 @@ define([
         _.forEach(users, function (user) {
             if (!user.displayed()) {
                 user.displayed(true);
-                user.loaded.subscribe(this.relayout, this);
+                user.relayoutSubscription = user.loaded.subscribe(this.relayout, this);
             }
         }, this);
         this.users(_.union(this.users(), users));
@@ -40,7 +47,7 @@ define([
         _.forEach(albums, function (album) {
             if (!album.displayed()) {
                 album.displayed(true);
-                album.loaded.subscribe(this.relayout, this);
+                album.relayoutSubscription = album.loaded.subscribe(this.relayout, this);
             }
         }, this);
         this.albums(_.union(this.albums(), albums));

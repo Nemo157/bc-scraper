@@ -2,18 +2,27 @@ define([
     'bootstrap',
     'knockout',
     './canvas',
-    './user'
-], function (bootstrap, ko, Canvas, User) {
+    './cache'
+], function (bootstrap, ko, Canvas, Cache) {
     var app = {
         canvas: new Canvas(),
+        cache: new Cache(),
         search: ko.observable(),
 
         doSearch: function () {
-            var user = new User(this.search(), this.canvas);
-            user.moveNear({ x: 700, y: 300 });
-            this.canvas.clear();
-            this.canvas.addUsers([user]);
-            user.load();
+            if (this.search().match(/https?:\/\/bandcamp\.com\/.*/i)) {
+                var user = this.cache.createUser(this.canvas, this.search());
+                user.moveNear({ x: 700, y: 300 });
+                this.canvas.clear();
+                this.canvas.addUsers([user]);
+                user.load();
+            } else {
+                var album = this.cache.createAlbum(this.canvas, this.search());
+                album.moveNear({ x: 700, y: 300 });
+                this.canvas.clear();
+                this.canvas.addAlbums([album]);
+                album.load();
+            }
         }
     };
 

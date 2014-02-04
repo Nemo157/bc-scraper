@@ -1,12 +1,10 @@
 define([
-    'require',
     'knockout',
     'lodash',
-    './item',
-    './album'
-], function (require, ko, _, Item, Album) {
-    function User(uri, canvas) {
-        Item.call(this, uri, canvas);
+    './item'
+], function (ko, _, Item) {
+    function User(uri, cache, canvas) {
+        Item.call(this, uri, cache, canvas);
         this.name = ko.observable();
         this.collected = ko.observableArray();
         this.related = ko.computed(_.bind(function () { return this.collected(); }, this));
@@ -38,7 +36,7 @@ define([
     User.prototype.onLoaded = function (data) {
         Item.prototype.onLoaded.call(this, data);
         this.name(data.name);
-        this.collected(_.map(data.collected, _.bind(this.createAlbum, this)));
+        this.collected(_.map(data.collected, _.bind(this.cache.createAlbum, this.cache, this.canvas)));
     };
 
     User.prototype.expand = function () {
@@ -47,11 +45,6 @@ define([
             album.load();
         }, this);
         this.canvas.addAlbums(this.collected());
-    };
-
-    User.prototype.createAlbum = function (uri) {
-        if (!Album) { Album = require('./album'); }
-        return _.find(this.canvas.albums(), function (album) { return album.uri() === uri; }) || new Album(uri, this.canvas);
     };
 
     User.prototype.getType = function () {
