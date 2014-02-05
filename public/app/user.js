@@ -22,7 +22,9 @@ define([
     User.prototype.onLoaded = function (data) {
         Item.prototype.onLoaded.call(this, data);
         this.name(data.name);
-        this.collectedIds(data.collected);
+        _.forEach(data.collected, function (id) {
+            _(this.push).bind(this).defer(id);
+        }, this.collectedIds);
     };
 
     User.prototype.type = 'user';

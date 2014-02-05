@@ -26,7 +26,9 @@ define([
         Item.prototype.onLoaded.call(this, data);
         this.artist(data.artist);
         this.title(data.title);
-        this.fanIds(data.fans);
+        _.forEach(data.fans, function (id) {
+            _(this.push).bind(this).defer(id);
+        }, this.fanIds);
     };
 
     Album.prototype.type = 'album';
