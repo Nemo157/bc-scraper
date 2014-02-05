@@ -13,7 +13,7 @@ module BandcampScraper
     end
 
     def linked
-      users
+      fans
     end
 
     def from_hash hash
