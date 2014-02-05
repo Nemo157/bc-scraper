@@ -65,7 +65,6 @@ define([
         _.forEach(this.related(), function (item) {
             if (!item.displayed()) {
                 item.moveNear(this.pos);
-                item.loading(true);
                 _(item.load).bind(item).delay(time += 10);
             }
         }, this);

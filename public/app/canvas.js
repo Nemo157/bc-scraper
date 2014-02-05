@@ -49,13 +49,21 @@ define([
     };
 
     Canvas.prototype.addUsers = function (users) {
-        _.forEach(users, function (user) { user.displayed(true); }, this);
-        ko.utils.arrayPushAll(this.users, users);
+        _(users).where(function (user) {
+            return !user.displayed();
+        }).forEach(function (user) {
+            user.displayed(true);
+            _(this.push).bind(this).defer(user);
+        }, this.users);
     };
 
     Canvas.prototype.addAlbums = function (albums) {
-        _.forEach(albums, function (album) { album.displayed(true); }, this);
-        ko.utils.arrayPushAll(this.albums, albums);
+        _(albums).where(function (album) {
+            return !album.displayed();
+        }).forEach(function (album) {
+            album.displayed(true);
+            _(this.push).bind(this).defer(album);
+        }, this.albums);
     };
 
     Canvas.prototype.doRelayout = function () {

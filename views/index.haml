@@ -55,11 +55,11 @@
 
     %script#item-template(type="text/html")
       .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }")
-        %a(data-toggle="tooltip" title="Click to load" data-bind="click: load, if: !loaded() && !loading() && !errored()" href="#")
-          %i.fa.fa-cloud-download
+        // %a(data-toggle="tooltip" title="Click to load" data-bind="click: load, if: !loaded() && !loading() && !errored()" href="#")
+        // %i.fa.fa-cloud-download
         %a(data-toggle="tooltip" title="There was an error loading, click to try again." data-bind="click: load, if: !loaded() && !loading() && errored()" href="#")
           %i.fa.fa-exclamation-triangle
-        %span(data-toggle="tooltip" title="Loading..." data-bind="if: loading()")
+        %span(data-toggle="tooltip" title="Loading..." data-bind="if: !loaded()")
           %i.fa.fa-spin.fa-spinner
         %span(data-toggle="tooltip" data-bind="attr: { title: header }, if: loaded()")
           %span.glyphicon(data-bind="css: iconClass")
