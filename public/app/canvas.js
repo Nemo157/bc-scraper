@@ -19,8 +19,22 @@ define([
             updateLayout: ko.observable(true)
         };
         this.nextLayout = this.repel;
-        this.boundLayout = _.bind(this.relayout, this);
-        window.requestAnimationFrame(this.boundLayout);
+
+        this.relayout = _.bind(function () {
+            if (this.settings.updateLayout()) {
+                this.doRelayout();
+            }
+            window.requestAnimationFrame(this.simulate);
+        }, this);
+
+        this.simulate = _.bind(function () {
+            if (this.settings.updateLayout()) {
+                this.doSimulate();
+            }
+            window.requestAnimationFrame(this.relayout);
+        }, this);
+
+        window.requestAnimationFrame(this.simulate);
     }
 
     Canvas.prototype.clear = function () {
@@ -44,11 +58,28 @@ define([
         ko.utils.arrayPushAll(this.albums, albums);
     };
 
-    Canvas.prototype.relayout = function () {
-        if (this.settings.updateLayout()) {
-            this.nextLayout = this.nextLayout();
+    Canvas.prototype.doRelayout = function () {
+        var items = this.items();
+
+        var displacement = 0;
+        var localDisplacement = 0;
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            localDisplacement = Math.abs(item.pos.x - item.x()) + Math.abs(item.pos.y - item.y());
+            if (localDisplacement > 0.5) {
+                displacement += localDisplacement;
+                item.x(item.pos.x);
+                item.y(item.pos.y);
+            }
         }
-        window.requestAnimationFrame(this.boundLayout);
+
+        this.settings.displacement(displacement);
+    };
+
+    Canvas.prototype.doSimulate = function () {
+        this.repel();
+        this.attract();
+        this.displace();
     };
 
     Canvas.prototype.repel = function () {
@@ -69,8 +100,6 @@ define([
                 item1.force.y += coul * (item1.pos.y - item2.pos.y);
             }
         }
-
-        return this.attract;
     };
 
     Canvas.prototype.attract = function () {
@@ -105,8 +134,6 @@ define([
                 }
             }
         }
-
-        return this.displace;
     };
 
     Canvas.prototype.displace = function () {
@@ -114,28 +141,16 @@ define([
 
         var damping = this.settings.damping();
 
-        var displacement = 0;
-        var localDisplacement = 0;
         var temp_pos = { x: 0, y: 0 };
-
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             temp_pos.x = item.pos.x;
             temp_pos.y = item.pos.y;
             item.pos.x += (item.pos.x - item.last_pos.x) * damping + item.force.x;
             item.pos.y += (item.pos.y - item.last_pos.y) * damping + item.force.y;
-            localDisplacement = Math.abs(item.pos.x - temp_pos.x) + Math.abs(item.pos.y - temp_pos.y);
-            displacement += localDisplacement;
             item.last_pos.x = temp_pos.x;
             item.last_pos.y = temp_pos.y;
-            if (localDisplacement > 0.5) {
-                item.position(item.pos);
-            }
         }
-
-        this.settings.displacement(displacement);
-
-        return this.repel;
     };
 
     Canvas.prototype.onMouseWheel = function (event) {

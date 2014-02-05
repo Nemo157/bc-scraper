@@ -18,7 +18,8 @@ define([
         this.last_pos = { x: 0, y: 0 };
         this.force = { x: 0, y: 0 };
         this.velocity = { x: 0, y: 0 };
-        this.position = ko.observable(this.pos);
+        this.x = ko.observable(0);
+        this.y = ko.observable(0);
         this.header = ko.computed(function () {
             return this.loaded() ?  this.headerText() : "Loading...";
         }, this);
@@ -70,8 +71,8 @@ define([
     };
 
     Item.prototype.moveNear = function (pos) {
-        this.last_pos.x = this.pos.x = Math.random() * 100 - 50 + pos.x;
-        this.last_pos.y = this.pos.y = Math.random() * 100 - 50 + pos.y;
+        this.x(this.last_pos.x = this.pos.x = Math.random() * 100 - 50 + pos.x);
+        this.y(this.last_pos.y = this.pos.y = Math.random() * 100 - 50 + pos.y);
     };
 
     return Item;
