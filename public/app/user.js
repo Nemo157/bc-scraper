@@ -20,11 +20,16 @@ define([
     };
 
     User.prototype.onLoaded = function (data) {
-        Item.prototype.onLoaded.call(this, data);
         this.name(data.name);
-        _.forEach(data.collected, function (id) {
-            _(this.push).bind(this).defer(id);
-        }, this.collectedIds);
+        var pushId = _.bind(function (from, to, i) {
+            if (i < from.length) {
+                to.push(from[i]);
+                _.defer(pushId, from, to, i + 1);
+            } else {
+                Item.prototype.onLoaded.call(this, data);
+            }
+        }, this);
+        pushId(data.collected, this.collectedIds, 0);
     };
 
     User.prototype.type = 'user';

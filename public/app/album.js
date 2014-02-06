@@ -23,12 +23,17 @@ define([
     };
 
     Album.prototype.onLoaded = function (data) {
-        Item.prototype.onLoaded.call(this, data);
         this.artist(data.artist);
         this.title(data.title);
-        _.forEach(data.fans, function (id) {
-            _(this.push).bind(this).defer(id);
-        }, this.fanIds);
+        var pushId = _.bind(function (from, to, i) {
+            if (i < from.length) {
+                to.push(from[i]);
+                _.defer(pushId, from, to, i + 1);
+            } else {
+                Item.prototype.onLoaded.call(this, data);
+            }
+        }, this);
+        pushId(data.fans, this.fanIds, 0);
     };
 
     Album.prototype.type = 'album';

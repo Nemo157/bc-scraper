@@ -14,6 +14,7 @@ define([
         this.loading = ko.observable(false);
         this.errored = ko.observable(false);
         this.displayed = ko.observable(false);
+        this.expanding = ko.observable(false);
         this.pos = { x: 0, y: 0 };
         this.last_pos = { x: 0, y: 0 };
         this.force = { x: 0, y: 0 };
@@ -61,14 +62,20 @@ define([
     };
 
     Item.prototype.expand = function () {
-        var time = 0;
-        _.forEach(this.related(), function (item) {
-            if (!item.displayed()) {
-                item.moveNear(this.pos);
-                _(item.load).bind(item).delay(time += 10);
+        this.expanding(true);
+        var loadItem = _.bind(function (items, i) {
+            if (i < items.length) {
+                if (!items[i].displayed()) {
+                    items[i].moveNear(this.pos);
+                    items[i].load();
+                }
+                _.defer(loadItem, items, i + 1);
+            } else {
+                this.canvas.add(this.related());
+                this.expanding(false);
             }
         }, this);
-        this.canvas.add(this.related());
+        loadItem(this.related(), 0);
     };
 
     Item.prototype.moveNear = function (pos) {

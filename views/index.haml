@@ -63,5 +63,7 @@
           %i.fa.fa-spin.fa-spinner
         %span(data-toggle="tooltip" data-bind="attr: { title: header }, if: loaded()")
           %span.glyphicon(data-bind="css: iconClass")
-        %a(data-toggle="tooltip" data-bind="click: expand, if: loaded() && relatedUndisplayed().length > 0, attr: { title: relatedUndisplayed().length + ' ' + relatedTypePluralized() }" href="#")
+        %a(data-toggle="tooltip" data-bind="click: expand, if: loaded() && !expanding() && relatedUndisplayed().length > 0, attr: { title: relatedUndisplayed().length + ' ' + relatedTypePluralized() }" href="#")
           %span.glyphicon(data-bind="css: relatedClass")
+        %span(data-toggle="tooltip" title="Expanding..." data-bind="if: expanding()")
+          %i.fa.fa-spin.fa-spinner
