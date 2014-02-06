@@ -13,12 +13,14 @@ define([
             if (this.search().match(/https?:\/\/bandcamp\.com\/.*/i)) {
                 var user = this.cache.createUser(this.canvas, this.search());
                 user.moveNear({ x: 700, y: 300 });
+                user.bound = true;
                 this.canvas.clear();
                 this.canvas.addUsers([user]);
                 user.load();
             } else {
                 var album = this.cache.createAlbum(this.canvas, this.search());
                 album.moveNear({ x: 700, y: 300 });
+                album.bound = true;
                 this.canvas.clear();
                 this.canvas.addAlbums([album]);
                 album.load();

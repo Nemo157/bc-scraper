@@ -152,6 +152,7 @@ define([
         var temp_pos = { x: 0, y: 0 };
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
+            if (item.bound) continue;
             temp_pos.x = item.pos.x;
             temp_pos.y = item.pos.y;
             item.pos.x += (item.pos.x - item.last_pos.x) * damping + item.force.x;
