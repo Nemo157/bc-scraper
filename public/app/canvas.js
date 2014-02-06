@@ -4,6 +4,7 @@ define([
     'lodash'
 ], function (ko, $, _) {
     function Canvas() {
+        this.width = this.height = 0;
         this.users = ko.observableArray();
         this.albums = ko.observableArray();
         this.items = ko.computed(_.bind(function () {
@@ -162,10 +163,20 @@ define([
         }
     };
 
-    Canvas.prototype.onMouseWheel = function (event) {
-        this.left(this.left() - event.originalEvent.deltaX);
-        this.top(this.top() - event.originalEvent.deltaY);
-        event.preventDefault();
+    Canvas.prototype.setSize = function (width, height) {
+        this.panBy((this.width - width) / 2, (this.height - height) / 2);
+        this.width = width;
+        this.height = height;
+    };
+
+    Canvas.prototype.panBy = function (deltaX, deltaY) {
+        this.left(this.left() - deltaX);
+        this.top(this.top() - deltaY);
+    };
+
+    Canvas.prototype.panTo = function (x, y) {
+        this.left(this.width / 2 - x);
+        this.top(this.height / 2 - y);
     };
 
     return Canvas;
