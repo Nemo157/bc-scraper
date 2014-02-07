@@ -8,9 +8,9 @@ define([
         this.collection = {};
     }
 
-    Cache.prototype.createItem = function (constructor, uri, canvas) {
+    Cache.prototype.createItem = function (constructor, uri, canvas, simulation) {
         if (!this.collection.hasOwnProperty(uri)) {
-            this.collection[uri] = new constructor(uri, this, this.worker, canvas);
+            this.collection[uri] = new constructor(uri, this, this.worker, canvas, simulation);
         }
 
         return this.collection[uri];
@@ -21,12 +21,12 @@ define([
         this.collection[newUri] = item;
     };
 
-    Cache.prototype.createAlbum = function (canvas, uri) {
-        return this.createItem(Album, uri, canvas);
+    Cache.prototype.createAlbum = function (canvas, simulation, uri) {
+        return this.createItem(Album, uri, canvas, simulation);
     };
 
-    Cache.prototype.createUser = function (canvas, uri) {
-        return this.createItem(User, uri, canvas);
+    Cache.prototype.createUser = function (canvas, simulation, uri) {
+        return this.createItem(User, uri, canvas, simulation);
     };
 
     return Cache;

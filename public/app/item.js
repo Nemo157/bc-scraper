@@ -6,10 +6,11 @@ define([
     function Item() {
     }
 
-    Item.prototype.init = function (uri, cache, worker, canvas) {
+    Item.prototype.init = function (uri, cache, worker, canvas, simulation) {
         this.cache = cache;
         this.worker = worker;
         this.canvas = canvas;
+        this.simulation = simulation;
         this.uri = ko.observable(uri);
         this.loaded = ko.observable(false);
         this.loading = ko.observable(false);
@@ -70,6 +71,7 @@ define([
             if (!item.displayed()) {
                 item.moveNear(this.pos);
                 this.canvas.add(item);
+                this.simulation.add(item);
                 item.load();
             }
         };

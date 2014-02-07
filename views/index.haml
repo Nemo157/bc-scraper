@@ -21,12 +21,12 @@
               %input.form-control(type="text" placeholder="Paste bandcamp url" data-bind="value: search")
               %span.input-group-btn
                 %button.btn.btn-default(type="submit" data-bind="click: doSearch") Load
+    .float-right#performance(data-bind="template: { name: 'performance-template', data: worker }")
+    .collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
     #container(data-bind="template: { name: 'canvas-template', data: canvas }")
 
 
     %script#canvas-template(type="text/html")
-      .float-right#performance(data-bind="template: { name: 'performance-template', data: worker }")
-      .collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
       #offset(data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }")
         .items(data-bind="template: { name: 'item-template', foreach: items }")
 

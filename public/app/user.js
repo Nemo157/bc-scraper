@@ -3,20 +3,20 @@ define([
     'lodash',
     './item'
 ], function (ko, _, Item) {
-    function User(uri, cache, worker, canvas) {
-        this.init(uri, cache, worker, canvas);
+    function User(uri, cache, worker, canvas, simulation) {
+        this.init(uri, cache, worker, canvas, simulation);
     }
 
     User.prototype = new Item();
     User.prototype.constructor = User;
 
-    User.prototype.init = function (uri, cache, worker, canvas) {
+    User.prototype.init = function (uri, cache, worker, canvas, simulation) {
         this.name = ko.observable();
         this.collectedIds = ko.observableArray();
-        this.collected = this.collectedIds.map(_.bind(cache.createAlbum, cache, canvas));
+        this.collected = this.collectedIds.map(_.bind(cache.createAlbum, cache, canvas, simulation));
         this.related = this.collected.map(_.identity);
         this.headerText = this.name;
-        Item.prototype.init.call(this, uri, cache, worker, canvas);
+        Item.prototype.init.call(this, uri, cache, worker, canvas, simulation);
     };
 
     User.prototype.onLoaded = function (data) {
