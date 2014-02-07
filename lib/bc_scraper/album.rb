@@ -41,9 +41,7 @@ module BandcampScraper
         hash[:artist] = artist
         hash[:title] = title
         hash[:last_update] = last_update
-        if fans.any?
-          hash[:fans] = fans.map { |user| user.uri }.uniq
-        end
+        hash[:fans] = fans.map { |user| user.uri }.uniq
       end
     end
   end

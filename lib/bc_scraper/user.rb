@@ -39,9 +39,7 @@ module BandcampScraper
       super.tap do |hash|
         hash[:name] = name
         hash[:last_update] = last_update
-        if collected.any?
-          hash[:collected] = collected.map { |album| album.uri }.uniq
-        end
+        hash[:collected] = collected.map { |album| album.uri }.uniq
       end
     end
   end

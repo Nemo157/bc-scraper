@@ -34,10 +34,10 @@ module BandcampScraper
         puts "Saving #{self.class.name} #{uri}"
         if aws_item.exists?
           puts "Updating details"
-          aws_item.attributes.set(to_hash)
+          aws_item.attributes.set(strip_empty to_hash)
         else
           puts "Creating new entry"
-          aws_table.items.create(to_hash true)
+          aws_table.items.create(strip_empty to_hash true)
           @stored = true
         end
       end
@@ -94,6 +94,12 @@ module BandcampScraper
         { uri: uri }
       else
         { }
+      end
+    end
+
+    def strip_empty input
+      input.delete_if do |key, value|
+        value.respond_to? :empty? and value.empty?
       end
     end
   end
