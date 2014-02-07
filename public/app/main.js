@@ -2,11 +2,14 @@ define([
     'bootstrap',
     'knockout',
     './canvas',
-    './cache'
-], function (bootstrap, ko, Canvas, Cache) {
+    './cache',
+    './worker'
+], function (bootstrap, ko, Canvas, Cache, Worker) {
+    var worker = new Worker();
     var app = {
-        canvas: new Canvas(),
-        cache: new Cache(),
+        worker: worker,
+        canvas: new Canvas(worker),
+        cache: new Cache(worker),
         search: ko.observable(),
 
         doSearch: function () {

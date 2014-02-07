@@ -3,7 +3,8 @@ define([
     'jquery',
     'lodash'
 ], function (ko, $, _) {
-    function Canvas() {
+    function Canvas(worker) {
+        this.worker = worker;
         this.width = this.height = 0;
         this.users = ko.observableArray();
         this.albums = ko.observableArray();
@@ -25,17 +26,16 @@ define([
             if (this.settings.updateLayout()) {
                 this.doRelayout();
             }
-            window.requestAnimationFrame(this.simulate);
         }, this);
 
         this.simulate = _.bind(function () {
             if (this.settings.updateLayout()) {
                 this.doSimulate();
             }
-            window.requestAnimationFrame(this.relayout);
         }, this);
 
-        window.requestAnimationFrame(this.simulate);
+        this.worker.addRepeating(this.relayout);
+        this.worker.addRepeating(this.simulate);
     }
 
     Canvas.prototype.clear = function () {
@@ -50,21 +50,29 @@ define([
     };
 
     Canvas.prototype.addUsers = function (users) {
-        _(users).where(function (user) {
-            return !user.displayed();
-        }).forEach(function (user) {
-            user.displayed(true);
-            _(this.push).bind(this).defer(user);
-        }, this.users);
+        var displayUser = _.bind(function (i) {
+            if (i < users.length) {
+                if (!users[i].displayed()) {
+                    users[i].displayed(true);
+                    this.users.push(users[i]);
+                }
+                this.worker.enqueue(displayUser, i + 1);
+            }
+        }, this);
+        this.worker.enqueue(displayUser, 0);
     };
 
     Canvas.prototype.addAlbums = function (albums) {
-        _(albums).where(function (album) {
-            return !album.displayed();
-        }).forEach(function (album) {
-            album.displayed(true);
-            _(this.push).bind(this).defer(album);
-        }, this.albums);
+        var displayAlbum = _.bind(function (i) {
+            if (i < albums.length) {
+                if (!albums[i].displayed()) {
+                    albums[i].displayed(true);
+                    this.albums.push(albums[i]);
+                }
+                this.worker.enqueue(displayAlbum, i + 1);
+            }
+        }, this);
+        this.worker.enqueue(displayAlbum, 0);
     };
 
     Canvas.prototype.doRelayout = function () {

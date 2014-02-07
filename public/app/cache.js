@@ -3,13 +3,14 @@ define([
     './album',
     './user',
 ], function (_, Album, User) {
-    function Cache() {
+    function Cache(worker) {
+        this.worker = worker;
         this.collection = {};
     }
 
     Cache.prototype.createItem = function (constructor, uri, canvas) {
         if (!this.collection.hasOwnProperty(uri)) {
-            this.collection[uri] = new constructor(uri, this, canvas);
+            this.collection[uri] = new constructor(uri, this, this.worker, canvas);
         }
 
         return this.collection[uri];

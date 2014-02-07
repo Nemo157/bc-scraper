@@ -3,14 +3,14 @@ define([
     'lodash',
     './item'
 ], function (ko, _, Item) {
-    function Album(uri, cache, canvas) {
-        this.init(uri, cache, canvas);
+    function Album(uri, cache, worker, canvas) {
+        this.init(uri, cache, worker, canvas);
     }
 
     Album.prototype = new Item();
     Album.prototype.constructor = Album;
 
-    Album.prototype.init = function (uri, cache, canvas) {
+    Album.prototype.init = function (uri, cache, worker, canvas) {
         this.artist = ko.observable();
         this.title = ko.observable();
         this.fanIds = ko.observableArray();
@@ -19,7 +19,7 @@ define([
         this.headerText = ko.computed(function () {
             return this.artist() + ' | ' + this.title();
         }, this);
-        Item.prototype.init.call(this, uri, cache, canvas);
+        Item.prototype.init.call(this, uri, cache, worker, canvas);
     };
 
     Album.prototype.onLoaded = function (data) {
@@ -28,12 +28,12 @@ define([
         var pushId = _.bind(function (from, to, i) {
             if (i < from.length) {
                 to.push(from[i]);
-                _.defer(pushId, from, to, i + 1);
+                this.worker.enqueue(pushId, from, to, i + 1);
             } else {
                 Item.prototype.onLoaded.call(this, data);
             }
         }, this);
-        pushId(data.fans, this.fanIds, 0);
+        this.worker.enqueue(pushId, data.fans, this.fanIds, 0);
     };
 
     Album.prototype.type = 'album';

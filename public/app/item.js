@@ -6,8 +6,9 @@ define([
     function Item() {
     }
 
-    Item.prototype.init = function (uri, cache, canvas) {
+    Item.prototype.init = function (uri, cache, worker, canvas) {
         this.cache = cache;
+        this.worker = worker;
         this.canvas = canvas;
         this.uri = ko.observable(uri);
         this.loaded = ko.observable(false);
@@ -40,6 +41,7 @@ define([
 
     Item.prototype.load = function () {
         if (!this.loaded() && !this.loading()) {
+            this.errored(false);
             this.loading(true);
             $.getJSON('/' + this.type + 's/' + this.uri().replace(/^https?:\/\//, ''))
              .done(_.bind(this.onLoaded, this))
@@ -69,13 +71,13 @@ define([
                     items[i].moveNear(this.pos);
                     items[i].load();
                 }
-                _.defer(loadItem, items, i + 1);
+                this.worker.enqueue(loadItem, items, i + 1);
             } else {
                 this.canvas.add(this.related());
                 this.expanding(false);
             }
         }, this);
-        loadItem(this.related(), 0);
+        this.worker.enqueue(loadItem, this.related(), 0);
     };
 
     Item.prototype.moveNear = function (pos) {
