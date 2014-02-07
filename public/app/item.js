@@ -74,9 +74,9 @@ define([
             }
         };
         for (var i = 0; i < items.length; i++) {
-            this.worker.enqueue(_.bind(expandItem, this, items[i]));
+            this.worker.enqueue(_.bind(expandItem, this, items[i]), 1);
         }
-        this.worker.enqueue(_.bind(this.expanding, this, false));
+        this.worker.enqueue(_.bind(this.expanding, this, false), 1);
     };
 
     Item.prototype.moveNear = function (pos) {

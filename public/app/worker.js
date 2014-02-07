@@ -4,7 +4,7 @@ define([
     ko
 ) {
     var Worker = function () {
-        this.queue = [];
+        this.queues = [];
         this.repeating = [];
         this.maxFrameLength = 10;
         this.processedLastFrame = ko.observable(0);
@@ -13,9 +13,16 @@ define([
         window.requestAnimationFrame(this.onFrame);
     };
 
-    Worker.prototype.enqueue = function (func) {
+    Worker.prototype.enqueue = function (func, priority) {
         var args = _.rest(arguments);
-        this.queue.push(func);
+        if (!priority) {
+            priority = 2;
+        }
+        var queue = this.queues[priority];
+        if (!queue) {
+            queue = this.queues[priority] = [];
+        }
+        queue.push(func);
     };
 
     Worker.prototype.addRepeating = function (func) {
@@ -31,14 +38,33 @@ define([
     };
 
     Worker.prototype.runWork = function () {
-        var func, count = 0;
-        while (((window.performance.now() - this.frameStart) < this.maxFrameLength || count < 1) && this.queue.length > 0) {
-            func = this.queue.shift();
-            func();
+        var count = 0;
+        var queue = this.findHighestQueue();
+        while (((window.performance.now() - this.frameStart) < this.maxFrameLength || count < 1) && queue.length > 0) {
+            queue.shift()();
             count += 1;
+            if (queue.length === 0) {
+                queue = this.findHighestQueue();
+            }
+        }
+
+        var remainingItems = 0;
+        for (var i = 0; i < this.queues.length; i++) {
+            if (this.queues[i]) {
+                remainingItems += this.queues[i].length;
+            }
         }
         this.processedLastFrame(count);
-        this.remainingItems(this.queue.length);
+        this.remainingItems(remainingItems);
+    };
+
+    Worker.prototype.findHighestQueue = function () {
+        for (var i = 0; i < this.queues.length; i++) {
+            if (this.queues[i] && this.queues[i].length > 0) {
+                return this.queues[i];
+            }
+        }
+        return [];
     };
 
     Worker.prototype.onFrame = function (time) {
