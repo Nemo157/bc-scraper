@@ -25,9 +25,16 @@
 
 
     %script#canvas-template(type="text/html")
+      .float-right#performance(data-bind="template: { name: 'performance-template', data: worker }")
       .collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
       #offset(data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }")
         .items(data-bind="template: { name: 'item-template', foreach: items }")
+
+    %script#performance-template(type="text/html")
+      Processed last frame:
+      %span(data-bind="text: processedLastFrame")
+      Remaining:
+      %span#remaining(data-bind="text: remainingItems")
 
     %script#settings-template(type="text/html")
       %form.form-horizontal.container(role="form")

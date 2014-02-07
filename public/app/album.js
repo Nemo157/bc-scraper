@@ -25,15 +25,10 @@ define([
     Album.prototype.onLoaded = function (data) {
         this.artist(data.artist);
         this.title(data.title);
-        var pushId = _.bind(function (from, to, i) {
-            if (i < from.length) {
-                to.push(from[i]);
-                this.worker.enqueue(pushId, from, to, i + 1);
-            } else {
-                Item.prototype.onLoaded.call(this, data);
-            }
-        }, this);
-        this.worker.enqueue(pushId, data.fans, this.fanIds, 0);
+        for (var i = 0; i < data.fans.length; i++) {
+            this.worker.enqueue(_.bind(this.fanIds.push, this.fanIds, data.fans[i]));
+        }
+        this.worker.enqueue(_.bind(Item.prototype.onLoaded, this, data));
     };
 
     Album.prototype.type = 'album';

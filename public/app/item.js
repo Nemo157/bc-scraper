@@ -65,19 +65,18 @@ define([
 
     Item.prototype.expand = function () {
         this.expanding(true);
-        var loadItem = _.bind(function (items, i) {
-            if (i < items.length) {
-                if (!items[i].displayed()) {
-                    items[i].moveNear(this.pos);
-                    items[i].load();
-                }
-                this.worker.enqueue(loadItem, items, i + 1);
-            } else {
-                this.canvas.add(this.related());
-                this.expanding(false);
+        var items = this.related();
+        var expandItem = function (item) {
+            if (!item.displayed()) {
+                item.moveNear(this.pos);
+                this.canvas.add(item);
+                item.load();
             }
-        }, this);
-        this.worker.enqueue(loadItem, this.related(), 0);
+        };
+        for (var i = 0; i < items.length; i++) {
+            this.worker.enqueue(_.bind(expandItem, this, items[i]));
+        }
+        this.worker.enqueue(_.bind(this.expanding, this, false));
     };
 
     Item.prototype.moveNear = function (pos) {

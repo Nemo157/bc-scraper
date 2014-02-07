@@ -21,15 +21,10 @@ define([
 
     User.prototype.onLoaded = function (data) {
         this.name(data.name);
-        var pushId = _.bind(function (from, to, i) {
-            if (i < from.length) {
-                to.push(from[i]);
-                this.worker.enqueue(pushId, from, to, i + 1);
-            } else {
-                Item.prototype.onLoaded.call(this, data);
-            }
-        }, this);
-        this.worker.enqueue(pushId, data.collected, this.collectedIds, 0);
+        for (var i = 0; i < data.collected.length; i++) {
+            this.worker.enqueue(_.bind(this.collectedIds.push, this.collectedIds, data.collected[i]));
+        }
+        this.worker.enqueue(_.bind(Item.prototype.onLoaded, this, data));
     };
 
     User.prototype.type = 'user';

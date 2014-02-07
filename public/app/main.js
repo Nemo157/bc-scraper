@@ -13,19 +13,16 @@ define([
         search: ko.observable(),
 
         doSearch: function () {
+            var item;
             if (this.search().match(/https?:\/\/bandcamp\.com\/.*/i)) {
-                var user = this.cache.createUser(this.canvas, this.search());
-                user.bound = true;
-                this.canvas.clear();
-                this.canvas.addUsers([user]);
-                user.load();
+                item = this.cache.createUser(this.canvas, this.search());
             } else {
-                var album = this.cache.createAlbum(this.canvas, this.search());
-                album.bound = true;
-                this.canvas.clear();
-                this.canvas.addAlbums([album]);
-                album.load();
+                item = this.cache.createAlbum(this.canvas, this.search());
             }
+            item.bound = true;
+            item.load();
+            this.canvas.clear();
+            this.canvas.add(item);
             this.canvas.panTo(0, 0);
         }
     };
