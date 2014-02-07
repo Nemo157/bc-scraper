@@ -59,6 +59,8 @@
           .col-md-2
             %label(for="displacement") Last Displacement
             %input.disabled.form-control.input-sm#displacement(type="number" data-bind="value: displacement")
+          %button.btn.btn-default(data-bind="click: save") Save
+          %button.btn.btn-default(data-bind="click: reset") Reset
 
     %script#item-template(type="text/html")
       .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }")

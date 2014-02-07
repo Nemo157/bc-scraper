@@ -4,16 +4,20 @@ define([
     './canvas',
     './simulation',
     './cache',
-    './worker'
-], function (bootstrap, ko, Canvas, Simulation, Cache, Worker) {
+    './worker',
+    './settings'
+], function (bootstrap, ko, Canvas, Simulation, Cache, Worker, Settings) {
+    var settings = new Settings('settings', {
+        damping: 0.5,
+        attraction: 0.01,
+        repulsion: 10,
+        displacement: 0,
+        updateLayout: true
+    });
+    settings.load();
+
     var worker = new Worker();
-    var settings = {
-        damping: ko.observable(0.5),
-        attraction: ko.observable(0.01),
-        repulsion: ko.observable(10),
-        displacement: ko.observable(0),
-        updateLayout: ko.observable(true)
-    };
+
     var app = {
         worker: worker,
         settings: settings,
