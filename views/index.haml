@@ -53,7 +53,11 @@
           .col-md-1
           .col-md-2
             %label
-              %input.form-control.input-sm(type="checkbox" data-bind="value: updateLayout") Update Layout
+              %input.form-control.input-sm(type="checkbox" data-bind="checked: updateLayout") Update Layout
+          .col-md-1
+          .col-md-2
+            %label
+              %input.form-control.input-sm(type="checkbox" data-bind="checked: runSimulation") Run Simulation
         .row
           .col-md-1
           .col-md-2

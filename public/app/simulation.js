@@ -8,7 +8,7 @@ define([
         this.items = [];
         this.settings = settings;
         this.worker.addRepeating(_.bind(function () {
-            if (this.settings.updateLayout()) {
+            if (this.settings.runSimulation()) {
                 this.simulate();
             }
         }, this));

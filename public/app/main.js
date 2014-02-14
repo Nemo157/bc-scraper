@@ -12,7 +12,8 @@ define([
         attraction: 0.01,
         repulsion: 10,
         displacement: 0,
-        updateLayout: true
+        updateLayout: true,
+        runSimulation: true
     });
     settings.load();
 
