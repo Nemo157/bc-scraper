@@ -12,11 +12,14 @@ define([
         attraction: 0.01,
         repulsion: 10,
         displacement: 0,
+        segmentSize: 100,
         updateLayout: true,
         runSimulation: true
     });
     var stats = new Settings('stats', {
         entities: 0,
+        segments: 0,
+        averagePerSegment: 0,
         processedLastFrame: 0,
         remainingItems: 0
     });

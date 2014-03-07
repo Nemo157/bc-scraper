@@ -37,6 +37,10 @@
       %span#remaining(data-bind="text: remainingItems")
       Entities:
       %span#remaining(data-bind="text: entities")
+      Segments:
+      %span#remaining(data-bind="text: segments")
+      Average entities per segment:
+      %span#remaining(data-bind="text: averagePerSegment")
 
     %script#settings-template(type="text/html")
       %form.form-horizontal.container(role="form")
@@ -52,6 +56,10 @@
           .col-md-2.form-group
             %label(for="damping") Damping
             %input.form-control.input-sm#damping(type="number" data-bind="value: damping")
+          .col-md-1
+          .col-md-2.form-group
+            %label(for="segmentSize") Segment Size
+            %input.form-control.input-sm#segmentSize(type="number" data-bind="value: segmentSize")
           .col-md-1
           .col-md-2
             %label
