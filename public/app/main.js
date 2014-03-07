@@ -15,15 +15,21 @@ define([
         updateLayout: true,
         runSimulation: true
     });
+    var stats = new Settings('stats', {
+        entities: 0,
+        processedLastFrame: 0,
+        remainingItems: 0
+    });
     settings.load();
 
-    var worker = new Worker();
+    var worker = new Worker(stats);
 
     var app = {
         worker: worker,
         settings: settings,
+        stats: stats,
         canvas: new Canvas(worker, settings),
-        simulation: new Simulation(worker, settings),
+        simulation: new Simulation(worker, settings, stats),
         cache: new Cache(worker),
         search: ko.observable(),
         doSearch: function () {
@@ -36,6 +42,7 @@ define([
             item.bound = true;
             item.load();
             this.canvas.clear();
+            this.simulation.clear();
             this.canvas.add(item);
             this.simulation.add(item);
             this.canvas.panTo(0, 0);
@@ -54,4 +61,6 @@ define([
     });
 
     ko.applyBindings(app);
+
+    return app;
 });

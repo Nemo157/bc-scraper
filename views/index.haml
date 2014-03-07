@@ -21,7 +21,7 @@
               %input.form-control(type="text" placeholder="Paste bandcamp url" data-bind="value: search")
               %span.input-group-btn
                 %button.btn.btn-default(type="submit" data-bind="click: doSearch") Load
-    .float-right#performance(data-bind="template: { name: 'performance-template', data: worker }")
+    .float-right#performance(data-bind="template: { name: 'performance-template', data: stats }")
     .collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
     #container(data-bind="template: { name: 'canvas-template', data: canvas }")
 
@@ -35,6 +35,8 @@
       %span(data-bind="text: processedLastFrame")
       Remaining:
       %span#remaining(data-bind="text: remainingItems")
+      Entities:
+      %span#remaining(data-bind="text: entities")
 
     %script#settings-template(type="text/html")
       %form.form-horizontal.container(role="form")

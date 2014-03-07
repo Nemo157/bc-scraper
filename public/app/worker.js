@@ -3,12 +3,11 @@ define([
 ], function (
     ko
 ) {
-    var Worker = function () {
+    var Worker = function (stats) {
+        this.stats = stats;
         this.queues = [];
         this.repeating = [];
         this.maxFrameLength = 10;
-        this.processedLastFrame = ko.observable(0);
-        this.remainingItems = ko.observable(0);
         this.onFrame = _.bind(this.onFrame, this);
         window.requestAnimationFrame(this.onFrame);
     };
@@ -54,8 +53,8 @@ define([
                 remainingItems += this.queues[i].length;
             }
         }
-        this.processedLastFrame(count);
-        this.remainingItems(remainingItems);
+        this.stats.processedLastFrame(count);
+        this.stats.remainingItems(remainingItems);
     };
 
     Worker.prototype.findHighestQueue = function () {

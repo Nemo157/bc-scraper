@@ -3,10 +3,11 @@ define([
     'jquery',
     'lodash'
 ], function (ko, $, _) {
-    function Simulation(worker, settings) {
+    function Simulation(worker, settings, stats) {
         this.worker = worker;
         this.items = [];
         this.settings = settings;
+        this.stats = stats;
         this.worker.addRepeating(_.bind(function () {
             if (this.settings.runSimulation()) {
                 this.simulate();
