@@ -28,6 +28,7 @@ define([
         this.repel();
         this.attract();
         this.displace();
+        this.stats.entities(this.items.length);
     };
 
     Simulation.prototype.repel = function () {

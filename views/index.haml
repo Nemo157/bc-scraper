@@ -11,18 +11,21 @@
     %nav.navbar.navbar-default.navbar-static-top#navbar(role="navigation")
       .navbar-header
         %a.col-lg-2.navbar-brand(href="/") bc-scraper
-        .col-lg-1
-          %button.btn.btn-default(type="button" data-toggle="collapse" data-target="#settings")
-            %span.glyphicon.glyphicon-cog
-        .col-lg-3
         %form.navbar-form
-          .navbar-form-group.col-lg-6search
+          .navbar-form-group.col-lg-offset-4.col-lg-6.search
             .input-group
               %input.form-control(type="text" placeholder="Paste bandcamp url" data-bind="value: search")
               %span.input-group-btn
                 %button.btn.btn-default(type="submit" data-bind="click: doSearch") Load
-    .float-right#performance(data-bind="template: { name: 'performance-template', data: stats }")
-    .collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
+    %a.pull-left.text-primary(data-toggle="collapse" data-target="#settings" href="#")
+      %span.glyphicon.glyphicon-wrench
+    %a.pull-right.text-primary(data-toggle="collapse" data-target="#performance" href="#")
+      %span.glyphicon.glyphicon-info-sign
+    .clearfix
+    .col-md-3.col-sm-4.col-xs-6
+      .panel.collapse#settings(data-bind="template: { name: 'settings-template', data: settings }")
+    .col-lg-offset-7.col-lg-2.col-md-offset-6.col-md-3.col-sm-offset-4.col-sm-4.col-xs-6
+      .panel.panel-info.collapse#performance(data-bind="template: { name: 'performance-template', data: stats }")
     #container(data-bind="template: { name: 'canvas-template', data: canvas }")
 
 
@@ -31,42 +34,59 @@
         .items(data-bind="template: { name: 'item-template', foreach: items }")
 
     %script#performance-template(type="text/html")
-      Processed last frame:
-      %span(data-bind="text: processedLastFrame")
-      Remaining:
-      %span#remaining(data-bind="text: remainingItems")
-      Entities:
-      %span#remaining(data-bind="text: entities")
+      .panel-heading
+        %h4.panel-title Stats
+      .panel-body
+        .panel
+          .panel-heading
+            %h5.panel-title Worker
+          .panel-body
+            .row
+              %label.col-xs-8 Processed
+              .col-xs-2.text-right(data-bind="text: processedLastFrame")
+            .row
+              %label.col-xs-8 Remaining
+              .col-xs-2.text-right(data-bind="text: remainingItems")
+        .panel
+          .panel-heading
+            %h5.panel-title Simulation
+          .panel-body
+            .row
+              %label.col-xs-8 Entities
+              .col-xs-2.text-right(data-bind="text: entities")
 
     %script#settings-template(type="text/html")
-      %form.form-horizontal.container(role="form")
-        .row
-          .col-md-2.form-group
-            %label(for="attraction") Attraction
-            %input.form-control.input-sm#attraction(type="number" data-bind="value: attraction")
-          .col-md-1
-          .col-md-2.form-group
-            %label(for="repulsion") Repulsion
-            %input.form-control.input-sm#repulsion(type="number" data-bind="value: repulsion")
-          .col-md-1
-          .col-md-2.form-group
-            %label(for="damping") Damping
-            %input.form-control.input-sm#damping(type="number" data-bind="value: damping")
-          .col-md-1
-          .col-md-2
-            %label
-              %input.form-control.input-sm(type="checkbox" data-bind="checked: updateLayout") Update Layout
-          .col-md-1
-          .col-md-2
-            %label
-              %input.form-control.input-sm(type="checkbox" data-bind="checked: runSimulation") Run Simulation
-        .row
-          .col-md-1
-          .col-md-2
-            %label(for="displacement") Last Displacement
-            %input.disabled.form-control.input-sm#displacement(type="number" data-bind="value: displacement")
-          %button.btn.btn-default(data-bind="click: save") Save
-          %button.btn.btn-default(data-bind="click: reset") Reset
+      .panel-heading
+        %h4.panel-title Settings
+      .panel-body
+        %form.form-horizontal(role="form")
+          .form-group
+            %label.col-xs-4.control-label(for="attraction") Attraction
+            .col-xs-8
+              %input.form-control.input-sm#attraction(type="number" data-bind="value: attraction")
+          .form-group
+            %label.col-xs-4.control-label(for="repulsion") Repulsion
+            .col-xs-8
+              %input.form-control.input-sm#repulsion(type="number" data-bind="value: repulsion")
+          .form-group
+            %label.col-xs-4.control-label(for="damping") Damping
+            .col-xs-8
+              %input.form-control.input-sm#damping(type="number" data-bind="value: damping")
+          .form-group
+            .col-xs-offset-4.col-xs-8
+              .checkbox
+                %label
+                  %input(type="checkbox" data-bind="checked: updateLayout") Update Layout
+          .form-group
+            .col-xs-offset-4.col-xs-8
+              .checkbox
+                %label
+                  %input(type="checkbox" data-bind="checked: runSimulation") Run Simulation
+          .form-group
+            .col-sm-offset-4.col-sm-4.col-xs-offset-2.col-xs-5
+              %button.btn.btn-default.btn-sm(data-bind="click: save") Save
+            .col-sm-4.col-xs-5
+              %button.btn.btn-default.btn-sm(data-bind="click: reset") Reset
 
     %script#item-template(type="text/html")
       .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }")
