@@ -8,7 +8,8 @@ requirejs.config({
         knockout: '//cdnjs.cloudflare.com/ajax/libs/knockout/3.0.0/knockout-min',
         'knockout-projections': '//rawgithub.com/mariusGundersen/knockout-projections/amd/dist/knockout-projections-1.0.0.min',
         'knockout.mapping': '//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping',
-        jStorage: '//cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.4/jstorage.min'
+        jStorage: '//cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.4/jstorage.min',
+        'knockout-bootstrap': '//rawgithub.com/billpull/knockout-bootstrap/master/build/knockout-bootstrap.min'
     },
     map: {
         '*': {
@@ -22,11 +23,17 @@ requirejs.config({
         },
         'knockout-projections': {
             knockout: 'knockout'
+        },
+        'knockout-bootstrap': {
+            knockout: 'knockout'
         }
     },
     shim: {
         bootstrap: {
             deps: ['jquery']
+        },
+        'knockout-bootstrap': {
+            deps: ['bootstrap', 'jquery']
         },
         fabric: {
             exports: 'fabric'

@@ -13,7 +13,6 @@ define([
                 this.simulate();
             }
         }, this));
-
     }
 
     Simulation.prototype.clear = function () {

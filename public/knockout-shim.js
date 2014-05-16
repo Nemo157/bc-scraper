@@ -1,6 +1,7 @@
 define([
     'knockout',
-    'knockout-projections'
+    'knockout-projections',
+    'knockout-bootstrap'
 ], function (
     ko
 ) {

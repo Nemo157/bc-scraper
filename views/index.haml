@@ -89,14 +89,22 @@
               %button.btn.btn-default.btn-sm(data-bind="click: reset") Reset
 
     %script#item-template(type="text/html")
-      .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }")
-        %a(data-toggle="tooltip" title="There was an error loading, click to try again." data-bind="click: load, if: !loaded() && !loading() && errored()" href="#")
+      .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }, event: { mouseover: onMouseOver, mouseout: onMouseOut }")
+        %a(data-bind="click: load, if: !loaded() && !loading() && errored()" href="#")
           %i.fa.fa-exclamation-triangle
-        %span(data-toggle="tooltip" title="Loading..." data-bind="if: !loaded() && !errored()")
+        %span(data-bind="if: !loaded() && !errored()")
           %i.fa.fa-spin.fa-spinner
-        %span(data-toggle="tooltip" data-bind="attr: { title: header }, if: loaded()")
-          %span.glyphicon(data-bind="css: iconClass")
-        %a(data-toggle="tooltip" data-bind="click: expand, if: loaded() && !expanding() && relatedUndisplayed().length > 0, attr: { title: relatedUndisplayed().length + ' ' + relatedTypePluralized() }" href="#")
-          %span.glyphicon(data-bind="css: relatedClass")
-        %span(data-toggle="tooltip" title="Expanding..." data-bind="if: expanding()")
-          %i.fa.fa-spin.fa-spinner
+        .dropdown
+          %a(data-toggle="dropdown" data-bind="tooltip: { title: header }, if: loaded()" href="#")
+            %span.glyphicon(data-bind="css: iconClass")
+          %ul.dropdown-menu(role="menu")
+            %li(role="presentation" data-bind="if: loaded")
+              %a(role="menuitem" data-bind="if: loaded(), attr: { href: uri }" target="_blank")
+                %i.fa.fa-external-link
+                Open on bandcamp
+            %li(role="presentation" data-bind="if: loaded() && !expanding() && relatedUndisplayed().length > 0")
+              %a(role="menuitem" data-bind="click: expand" href="#")
+                %i.glyphicon(data-bind="css: relatedClass")
+                Expand
+                %span(data-bind="text: relatedUndisplayed().length")
+                %span(data-bind="text: relatedTypePluralized()")

@@ -23,6 +23,7 @@ define([
         this.velocity = { x: 0, y: 0 };
         this.x = ko.observable(0);
         this.y = ko.observable(0);
+        this.mouseOver = ko.observable();
         this.header = ko.computed(function () {
             return this.loaded() ?  this.headerText() : "Loading...";
         }, this);
@@ -84,6 +85,21 @@ define([
     Item.prototype.moveNear = function (pos) {
         this.x(this.last_pos.x = this.pos.x = Math.random() * 100 - 50 + pos.x);
         this.y(this.last_pos.y = this.pos.y = Math.random() * 100 - 50 + pos.y);
+    };
+
+    Item.prototype.onMouseOver = function () {
+        if (!this.mouseOver()) {
+            this.originalBound = this.bound;
+            this.bound = true;
+            this.mouseOver(true);
+        }
+    };
+
+    Item.prototype.onMouseOut = function () {
+        if (this.mouseOver()) {
+            this.bound = this.originalBound;
+            this.mouseOver(false);
+        }
     };
 
     return Item;
