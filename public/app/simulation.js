@@ -36,6 +36,7 @@ define([
         for (var i = 0; i < this.items.length; i++) {
             var item1 = this.items[i];
             item1.force.x = item1.force.y = 0;
+            if (item1.bound) continue;
             for (var j = 0; j < this.items.length; j++) {
                 if (i === j) continue;
                 var item2 = this.items[j];
@@ -54,6 +55,7 @@ define([
         var i, j, item1, item2, related;
         for (i = 0; i < this.items.length; i++) {
             item1 = this.items[i];
+            if (item1.bound) continue;
             related = item1.relatedDisplayed();
             for (j = 0; j < related.length; j++) {
                 item2 = related[j];
