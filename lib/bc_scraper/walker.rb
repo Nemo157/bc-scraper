@@ -2,6 +2,7 @@ require 'optparse'
 
 require_relative 'album'
 require_relative 'user'
+require_relative 'setup'
 require_relative 'next_algorithms'
 
 module BandcampScraper
@@ -38,8 +39,8 @@ module BandcampScraper
         exit 2
       end
 
-      queue = @users.map { |user| BandcampScraper::User.new(user) }
-      queue += @albums.map { |album| BandcampScraper::Album.new(album) }
+      queue = @users.map { |user| User.get_or_create(user) }
+      queue += @albums.map { |album| Album.get_or_create(album) }
 
       continue = true
       trap("SIGINT") do
@@ -50,8 +51,7 @@ module BandcampScraper
       end
       while continue && current = queue.pop
         begin
-          current.load! unless current.loaded?
-          current.save! unless current.stored?
+          current.parse and current.save! unless current.parsed?
           next_algo.process current, queue
         rescue
           puts "Error processing #{current.uri}: #{$!}"

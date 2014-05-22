@@ -2,7 +2,8 @@ source "https://rubygems.org"
 
 ruby '2.0.0'
 
-gem 'aws-sdk'
+gem 'data_mapper'
+gem 'dm-postgres-adapter'
 gem 'nokogiri'
 gem 'sinatra'
 gem 'sinatra-contrib'

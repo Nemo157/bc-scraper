@@ -6,29 +6,33 @@ require_relative 'user'
 
 module BandcampScraper
   class Album < Item
-    attr_reader :artist, :title, :fans
+    include DataMapper::Resource
 
-    def aws_table_name
-      'bandcamp-album'
+    property :uri, URI, key: true
+    property :parsed?, Boolean
+    property :created_at, DateTime
+    property :updated_at, DateTime
+    property :deleted_at, ParanoidDateTime
+
+    def uri= uri
+      super normalize_uri(uri)
     end
+
+    property :artist, String
+    property :title, String
+
+    has n, :users, through: Resource
 
     def linked
-      fans
-    end
-
-    def from_hash hash
-      @artist = hash[:artist]
-      @title = hash[:title]
-      @fans = (hash[:fans] || hash[:users] || []).map { |uri| User.new(uri) }
-      super
+      users
     end
 
     def parse_page doc
-      {
-        artist: doc.css('[itemprop="byArtist"]').first.inner_text.strip,
-        title: doc.css('.trackTitle').first.inner_text.strip,
-        fans: find_fans(doc).map { |fan| fan['url'] }
-      }
+      self.artist = doc.css('[itemprop="byArtist"]').first.inner_text.strip
+      self.title = doc.css('.trackTitle').first.inner_text.strip
+      find_fans(doc).each do |fan|
+        users << User.get_or_create(fan['url'])
+      end
     end
 
     def find_fans doc
@@ -40,8 +44,7 @@ module BandcampScraper
       super.tap do |hash|
         hash[:artist] = artist
         hash[:title] = title
-        hash[:last_update] = last_update
-        hash[:fans] = fans.map { |user| user.uri }.uniq
+        hash[:fans] = users.map { |user| user.uri }.uniq
       end
     end
   end

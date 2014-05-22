@@ -3,6 +3,7 @@ require 'sinatra/json'
 
 require_relative 'user'
 require_relative 'album'
+#require_relative 'setup'
 
 module BandcampScraper
   class App < Sinatra::Base
@@ -14,14 +15,14 @@ module BandcampScraper
     end
 
     get '/users/*' do |uri|
-      user = User.new("http://#{uri}").load!
-      user.save! unless user.stored?
+      user = User.get_or_create("http://#{uri}")
+      user.parse and user.save! unless user.parsed?
       json user.to_hash(true)
     end
 
     get '/albums/*' do |uri|
-      album = Album.new("http://#{uri}").load!
-      album.save! unless album.stored?
+      album = Album.get_or_create("http://#{uri}")
+      album.parse and album.save! unless album.parsed?
       json album.to_hash(true)
     end
   end
