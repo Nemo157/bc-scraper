@@ -96,7 +96,7 @@
         %span(data-bind="if: !loaded() && !errored()")
           %i.fa.fa-spin.fa-spinner
         .dropdown
-          %a(data-toggle="dropdown" data-bind="tooltip: { title: header }, if: loaded()" href="#")
+          %a(data-toggle="dropdown" data-bind="tooltip: { title: header, container: 'body', html: true }, if: loaded()" href="#")
             %span.glyphicon(data-bind="css: iconClass")
           %ul.dropdown-menu(role="menu")
             %li(role="presentation" data-bind="if: loaded")

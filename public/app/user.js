@@ -15,7 +15,7 @@ define([
         this.collectedIds = ko.observableArray();
         this.collected = this.collectedIds.map(_.bind(cache.createAlbum, cache, canvas, simulation));
         this.related = this.collected.map(_.identity);
-        this.headerText = this.name;
+        this.headerText = ko.computed(function () { return _.escape(this.name()); }, this);
         Item.prototype.init.call(this, uri, cache, worker, canvas, simulation);
     };
 

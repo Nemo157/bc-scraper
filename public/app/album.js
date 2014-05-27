@@ -17,7 +17,7 @@ define([
         this.fans = this.fanIds.map(_.bind(cache.createUser, cache, canvas, simulation));
         this.related = this.fans.map(_.identity);
         this.headerText = ko.computed(function () {
-            return this.artist() + ' | ' + this.title();
+            return _.escape(this.artist()) + '<br>' + _.escape(this.title());
         }, this);
         Item.prototype.init.call(this, uri, cache, worker, canvas, simulation);
     };
