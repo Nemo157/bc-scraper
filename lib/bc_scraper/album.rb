@@ -30,9 +30,7 @@ module BandcampScraper
     def parse_page doc
       self.artist = doc.css('[itemprop="byArtist"]').first.inner_text.strip
       self.title = doc.css('.trackTitle').first.inner_text.strip
-      find_fans(doc).each do |fan|
-        users << User.get_or_create(fan['url'])
-      end
+      users.push(*User.get_or_create_all(find_fans(doc).map { |fan| fan['url'] }))
     end
 
     def find_fans doc

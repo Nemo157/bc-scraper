@@ -28,9 +28,7 @@ module BandcampScraper
 
     def parse_page doc
       self.name = doc.css('.fan-name').first.inner_text.strip
-      find_albums(doc).each do |key, value|
-        albums << Album.get_or_create(value['item_url'])
-      end
+      albums.push(*Album.get_or_create_all(find_albums(doc).map { |key, value| value['item_url'] }))
     end
 
     def find_albums doc
