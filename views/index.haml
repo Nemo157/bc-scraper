@@ -2,7 +2,6 @@
   %head
     %title bc-scraper
     %meta(http-equiv="Content-type" content="text/html; charset=UTF-8")
-    %link(href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet")
     %link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet")
     %link(href="//netdna.bootstrapcdn.com/bootswatch/3.0.3/amelia/bootstrap.min.css" rel="stylesheet")
     %script(src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js" data-main="app")
@@ -96,16 +95,18 @@
         %span(data-bind="if: !loaded() && !errored()")
           %i.fa.fa-spin.fa-spinner
         .dropdown
-          %a(data-toggle="dropdown" data-bind="tooltip: { title: header, container: 'body', html: true }, if: loaded()" href="#")
+          %a(data-bind="tooltip: { title: header, container: 'body', html: true }, popover: { template: 'item-popover-template', title: function () { return '<button class=\"close pull-right\" type=\"button\" data-dismiss=\"popover\">×</button>' + header(); }, container: 'body' }, if: loaded()" href="#")
             %span.glyphicon(data-bind="css: iconClass")
-          %ul.dropdown-menu(role="menu")
-            %li(role="presentation" data-bind="if: loaded")
-              %a(role="menuitem" data-bind="if: loaded(), attr: { href: uri }" target="_blank")
-                %i.fa.fa-external-link
-                Open on bandcamp
-            %li(role="presentation" data-bind="if: loaded() && !expanding() && relatedUndisplayed().length > 0")
-              %a(role="menuitem" data-bind="click: expand" href="#")
-                %i.glyphicon(data-bind="css: relatedClass")
-                Expand
-                %span(data-bind="text: relatedUndisplayed().length")
-                %span(data-bind="text: relatedTypePluralized()")
+
+    %script#item-popover-template(type="text/html")
+      %ul.nav.nav-pills.nav-stacked
+        %li(data-bind="if: loaded")
+          %a(data-bind="if: loaded(), attr: { href: uri }" target="_blank")
+            %i.fa.fa-external-link
+            Open on bandcamp
+        %li(data-bind="if: loaded() && !expanding() && relatedUndisplayed().length > 0")
+          %a(data-dismiss="popover" data-bind="click: expand" href="#")
+            %i.glyphicon(data-bind="css: relatedClass")
+            Expand
+            %span(data-bind="text: relatedUndisplayed().length")
+            %span(data-bind="text: relatedTypePluralized()")
