@@ -24,6 +24,7 @@ define([
         this.x = ko.observable(0);
         this.y = ko.observable(0);
         this.mouseOver = ko.observable();
+        this.mouseDown = ko.observable();
         this.header = ko.computed(function () {
             return this.loaded() ?  this.headerText() : "Loading...";
         }, this);
@@ -96,9 +97,24 @@ define([
     };
 
     Item.prototype.onMouseOut = function () {
-        if (this.mouseOver()) {
+        if (this.mouseOver() && !this.mouseDown()) {
             this.bound = this.originalBound;
             this.mouseOver(false);
+        }
+    };
+
+    Item.prototype.onMouseDown = function () {
+        this.mouseDown(true);
+    };
+
+    Item.prototype.onMouseUp = function () {
+        this.mouseDown(false);
+    };
+
+    Item.prototype.onMouseMove = function (data, event, canvasLeft, canvasTop) {
+        if (this.mouseDown()) {
+            this.x(this.last_pos.x = this.pos.x = event.x - canvasLeft - 8);
+            this.y(this.last_pos.y = this.pos.y = event.y - canvasTop - 8);
         }
     };
 

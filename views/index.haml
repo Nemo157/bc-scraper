@@ -30,8 +30,9 @@
 
 
     %script#canvas-template(type="text/html")
-      #offset(data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }")
-        .items(data-bind="template: { name: 'item-template', foreach: items }")
+      #base(data-bind="style: { height: height, width: width }, event: { mouseup: onMouseUp, mousemove: onMouseMove }")
+        #offset(data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }")
+          .items(data-bind="template: { name: 'item-template', foreach: items }")
 
     %script#performance-template(type="text/html")
       .panel-heading
@@ -89,7 +90,7 @@
               %button.btn.btn-default.btn-sm(data-bind="click: reset") Reset
 
     %script#item-template(type="text/html")
-      .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }, event: { mouseover: onMouseOver, mouseout: onMouseOut }")
+      .item(data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }, event: { mouseover: onMouseOver, mouseout: onMouseOut, mousedown: $parent.onMouseDown }")
         %a(data-bind="click: load, if: !loaded() && !loading() && errored()" href="#")
           %i.fa.fa-exclamation-triangle
         %span(data-bind="if: !loaded() && !errored()")

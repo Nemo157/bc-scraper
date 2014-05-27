@@ -6,7 +6,8 @@ define([
     function Canvas(worker, settings) {
         this.worker = worker;
         this.settings = settings;
-        this.width = this.height = 0;
+        this.width = ko.observable(0);
+        this.height = ko.observable(0);
         this.users = ko.observableArray();
         this.albums = ko.observableArray();
         this.items = ko.computed(_.bind(function () {
@@ -14,12 +15,32 @@ define([
         }, this));
         this.left = ko.observable(0);
         this.top = ko.observable(0);
+        this.topOffset = ko.observable(0);
 
         this.worker.addRepeating(_.bind(function () {
             if (this.settings.updateLayout()) {
                 this.relayout();
             }
         }, this));
+
+        this.onMouseDown = _.bind(function (item) {
+            this.onMouseUp();
+            item.onMouseDown();
+            this.currentHeldItem = item;
+        }, this);
+
+        this.onMouseUp = _.bind(function (item) {
+            if (this.currentHeldItem) {
+                this.currentHeldItem.onMouseUp();
+                this.currentHeldItem = null;
+            }
+        }, this);
+
+        this.onMouseMove = _.bind(function (data, event) {
+            if (this.currentHeldItem) {
+                this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top() + this.topOffset());
+            }
+        }, this);
     }
 
     Canvas.prototype.clear = function () {
@@ -56,10 +77,11 @@ define([
         this.settings.displacement(displacement);
     };
 
-    Canvas.prototype.setSize = function (width, height) {
-        this.panBy((this.width - width) / 2, (this.height - height) / 2);
-        this.width = width;
-        this.height = height;
+    Canvas.prototype.setSize = function (width, height, topOffset) {
+        this.panBy((this.width() - width) / 2, (this.height() - height + topOffset) / 2);
+        this.width(width);
+        this.height(height - topOffset);
+        this.topOffset(topOffset);
     };
 
     Canvas.prototype.panBy = function (deltaX, deltaY) {
@@ -68,8 +90,8 @@ define([
     };
 
     Canvas.prototype.panTo = function (x, y) {
-        this.left(this.width / 2 - x);
-        this.top(this.height / 2 - y);
+        this.left(this.width() / 2 - x);
+        this.top(this.height() / 2 - y);
     };
 
     return Canvas;

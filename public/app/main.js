@@ -49,10 +49,10 @@ define([
         }
     };
 
-    app.canvas.setSize($(window).width(), $(window).height() - $('#navbar').height());
+    app.canvas.setSize($(window).width(), $(window).height(), $('#container').offset().top);
 
     $(window).on('resize', function (event) {
-        app.canvas.setSize($(window).width(), $(window).height() - $('#navbar').height());
+        app.canvas.setSize($(window).width(), $(window).height(), $('#container').offset().top);
     });
 
     $(window).on('mousewheel', function (event) {
