@@ -55,12 +55,13 @@ define([
         var i, j, item1, item2, related;
         for (i = 0; i < this.items.length; i++) {
             item1 = this.items[i];
-            if (item1.bound) continue;
             related = item1.relatedDisplayed();
             for (j = 0; j < related.length; j++) {
                 item2 = related[j];
-                item1.force.x += attraction * (item2.pos.x - item1.pos.x);
-                item1.force.y += attraction * (item2.pos.y - item1.pos.y);
+                if (!item1.bound) {
+                    item1.force.x += attraction * (item2.pos.x - item1.pos.x);
+                    item1.force.y += attraction * (item2.pos.y - item1.pos.y);
+                }
                 item2.force.x += attraction * (item1.pos.x - item2.pos.x);
                 item2.force.y += attraction * (item1.pos.y - item2.pos.y);
             }
