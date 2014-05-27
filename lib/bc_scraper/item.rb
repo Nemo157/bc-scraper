@@ -12,7 +12,7 @@ module BandcampScraper
       puts "Loading from Bandcamp"
       open uri do |page|
         begin
-          parse_page Nokogiri::HTML page
+          parse_page Nokogiri::HTML page, uri, 'utf8'
           self.parsed = true
         rescue
           puts "Error loading #{uri}: #{$!}"
