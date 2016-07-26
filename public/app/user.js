@@ -1,8 +1,10 @@
 define([
     'knockout',
     'lodash',
-    './item'
-], function (ko, _, Item) {
+    './item',
+    './loader',
+    './user_scraper'
+], function (ko, _, Item, Loader, UserScraper) {
     function User(uri, cache, worker, canvas, simulation) {
         this.init(uri, cache, worker, canvas, simulation);
     }
@@ -30,6 +32,7 @@ define([
     User.prototype.type = 'user';
     User.prototype.relatedType = 'album';
     User.prototype.iconClass = 'glyphicon-user';
+    User.prototype.loader = new Loader('user', new UserScraper());
 
     return User;
 });

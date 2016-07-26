@@ -11,7 +11,7 @@ define([
         this.worker = worker;
         this.canvas = canvas;
         this.simulation = simulation;
-        this.uri = ko.observable(uri);
+        this.uri = uri;
         this.loaded = ko.observable(false);
         this.loading = ko.observable(false);
         this.errored = ko.observable(false);
@@ -40,30 +40,28 @@ define([
         this.relatedTypePluralized = ko.computed(function () {
             return this.relatedType + (this.relatedUndisplayed().length > 1 ? 's' : '');
         }, this);
+        this.error = ko.observable();
     };
 
     Item.prototype.load = function () {
         if (!this.loaded() && !this.loading()) {
             this.errored(false);
             this.loading(true);
-            $.getJSON('/' + this.type + 's/' + this.uri().replace(/^https?:\/\//, ''))
-             .done(_.bind(this.onLoaded, this))
-             .fail(_.bind(this.onError, this));
+            this.loader.get(this.uri.replace(/^https?:\/\//, ''))
+             .then(_.bind(this.onLoaded, this), _.bind(this.onError, this));
          }
     };
 
     Item.prototype.onLoaded = function (data) {
         this.loading(false);
         this.loaded(true);
-        if (this.uri() !== data.uri) {
-            this.cache.updateUri(this, this.uri(), data.uri);
-            this.uri(data.uri);
-        }
     };
 
-    Item.prototype.onError = function () {
+    Item.prototype.onError = function (err) {
+        console.log("Error loading item:", this.uri, err);
         this.loading(false);
         this.errored(true);
+        this.error(err.toString());
     };
 
     Item.prototype.expand = function () {

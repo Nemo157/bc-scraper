@@ -131,14 +131,14 @@
     </script>
     <script id='item-template' type='text/html'>
       <div class='item' data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }, event: { mouseover: onMouseOver, mouseout: onMouseOut, mousedown: $parent.onMouseDown }">
-        <a data-bind='click: load, if: !loaded() &amp;&amp; !loading() &amp;&amp; errored()' href='#'>
+        <a data-bind='click: load, if: !loaded() &amp;&amp; !loading() &amp;&amp; errored(), tooltip: { title: error(), container: &#x0027;body&#x0027; }' href='#'>
           <i class='fa fa-exclamation-triangle'></i>
         </a>
         <span data-bind='if: !loaded() &amp;&amp; !errored()'>
           <i class='fa fa-spin fa-spinner'></i>
         </span>
         <div class='dropdown'>
-          <a data-bind='tooltip: { title: header, container: &#x0027;body&#x0027;, html: true }, popover: { template: &#x0027;item-popover-template&#x0027;, title: function () { return &#x0027;&lt;button class="close pull-right" type="button" data-dismiss="popover"&gt;×&lt;/button&gt;&#x0027; + header(); }, container: &#x0027;body&#x0027; }, if: loaded()' href='#'>
+          <a data-bind='tooltip: { title: header, container: &#x0027;body&#x0027;, html: true }, popover: { template: &#x0027;item-popover-template&#x0027;, title: function () { return &#x0027;&lt;button class="close pull-right" type="button" data-dismiss="popover"&gt;×&lt;/button&gt;&#x0027; + header(); }, container: &#x0027;body&#x0027; }, if: loaded' href='#'>
             <span class='glyphicon' data-bind='css: iconClass'></span>
           </a>
         </div>

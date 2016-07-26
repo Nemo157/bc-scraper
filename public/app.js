@@ -9,7 +9,7 @@ requirejs.config({
         'knockout-projections': 'https://rawgithub.com/mariusGundersen/knockout-projections/amd/dist/knockout-projections-1.0.0.min',
         'knockout.mapping': 'https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping',
         jStorage: 'https://cdnjs.cloudflare.com/ajax/libs/jStorage/0.4.4/jstorage.min',
-        'knockout-bootstrap': 'https://rawgithub.com/billpull/knockout-bootstrap/master/build/knockout-bootstrap.min'
+        'knockout-bootstrap': 'https://rawgithub.com/billpull/knockout-bootstrap/v0.3.1/build/knockout-bootstrap.min'
     },
     map: {
         '*': {

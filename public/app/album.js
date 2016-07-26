@@ -1,8 +1,10 @@
 define([
     'knockout',
     'lodash',
-    './item'
-], function (ko, _, Item) {
+    './item',
+    './loader',
+    './album_scraper'
+], function (ko, _, Item, Loader, AlbumScraper) {
     function Album(uri, cache, worker, canvas, simulation) {
         this.init(uri, cache, worker, canvas, simulation);
     }
@@ -34,6 +36,7 @@ define([
     Album.prototype.type = 'album';
     Album.prototype.relatedType = 'fan';
     Album.prototype.iconClass = 'glyphicon-headphones';
+    Album.prototype.loader = new Loader('album', new AlbumScraper());
 
     return Album;
 });
