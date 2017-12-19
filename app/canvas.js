@@ -15,7 +15,6 @@ define([
         }, this));
         this.left = ko.observable(0);
         this.top = ko.observable(0);
-        this.topOffset = ko.observable(0);
 
         this.worker.addRepeating(_.bind(function () {
             if (this.settings.updateLayout()) {
@@ -38,7 +37,7 @@ define([
 
         this.onMouseMove = _.bind(function (data, event) {
             if (this.currentHeldItem) {
-                this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top() + this.topOffset());
+                this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top());
             }
         }, this);
     }
@@ -77,11 +76,10 @@ define([
         this.settings.displacement(displacement);
     };
 
-    Canvas.prototype.setSize = function (width, height, topOffset) {
-        this.panBy((this.width() - width) / 2, (this.height() - height + topOffset) / 2);
+    Canvas.prototype.setSize = function (width, height) {
+        this.panBy((this.width() - width) / 2, (this.height() - height) / 2);
         this.width(width);
-        this.height(height - topOffset);
-        this.topOffset(topOffset);
+        this.height(height);
     };
 
     Canvas.prototype.panBy = function (deltaX, deltaY) {

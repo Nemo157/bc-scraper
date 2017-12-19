@@ -17,7 +17,9 @@ define([
         this.collectedIds = ko.observableArray();
         this.collected = this.collectedIds.map(_.bind(cache.createAlbum, cache, canvas, simulation));
         this.related = this.collected.map(_.identity);
-        this.headerText = ko.computed(function () { return _.escape(this.name()); }, this);
+        this.headerText = ko.computed(function () {
+            return this.name();
+        }, this);
         Item.prototype.init.call(this, uri, cache, worker, canvas, simulation);
     };
 
@@ -31,7 +33,7 @@ define([
 
     User.prototype.type = 'user';
     User.prototype.relatedType = 'album';
-    User.prototype.iconClass = 'glyphicon-user';
+    User.prototype.iconClass = 'fa-user';
     User.prototype.loader = new Loader('user', new UserScraper());
 
     return User;

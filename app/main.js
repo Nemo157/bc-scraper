@@ -1,12 +1,11 @@
 define([
-    'bootstrap',
     'knockout',
     './canvas',
     './simulation',
     './cache',
     './worker',
     './settings'
-], function (bootstrap, ko, Canvas, Simulation, Cache, Worker, Settings) {
+], function (ko, Canvas, Simulation, Cache, Worker, Settings) {
     var settings = new Settings('settings', {
         damping: 0.5,
         attraction: 0.01,
@@ -32,6 +31,8 @@ define([
         simulation: new Simulation(worker, settings, stats),
         cache: new Cache(worker),
         search: ko.observable(),
+        hovered: ko.observable(),
+        clicked: ko.observable(),
         doSearch: function () {
             var item;
             if (this.search().match(/https?:\/\/bandcamp\.com\/.*/i)) {
@@ -49,10 +50,10 @@ define([
         }
     };
 
-    app.canvas.setSize($(window).width(), $(window).height(), $('#container').offset().top);
+    app.canvas.setSize($('#canvas').width(), $('#canvas').height());
 
     $(window).on('resize', function (event) {
-        app.canvas.setSize($(window).width(), $(window).height(), $('#container').offset().top);
+        app.canvas.setSize($('#canvas').width(), $('#canvas').height());
     });
 
     $(window).on('mousewheel', function (event) {

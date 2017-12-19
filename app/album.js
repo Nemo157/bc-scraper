@@ -19,7 +19,7 @@ define([
         this.fans = this.fanIds.map(_.bind(cache.createUser, cache, canvas, simulation));
         this.related = this.fans.map(_.identity);
         this.headerText = ko.computed(function () {
-            return _.escape(this.artist()) + '<br>' + _.escape(this.title());
+            return this.title() + ' by ' + this.artist();
         }, this);
         Item.prototype.init.call(this, uri, cache, worker, canvas, simulation);
     };
@@ -35,7 +35,7 @@ define([
 
     Album.prototype.type = 'album';
     Album.prototype.relatedType = 'fan';
-    Album.prototype.iconClass = 'glyphicon-headphones';
+    Album.prototype.iconClass = 'fa-headphones';
     Album.prototype.loader = new Loader('album', new AlbumScraper());
 
     return Album;

@@ -26,13 +26,17 @@ define([
         this.mouseOver = ko.observable();
         this.mouseDown = ko.observable();
         this.header = ko.computed(function () {
-            return this.loaded() ?  this.headerText() : "Loading...";
+            return this.loaded()
+              ? this.headerText()
+              : this.errored()
+              ? "Errored"
+              : "Loading...";
         }, this);
         this.relatedClass = ko.computed(function () {
             if (this.related().length > 20) {
-                return 'glyphicon-th';
+                return 'fa-th';
             } else {
-                return 'glyphicon-th-large';
+                return 'fa-th-large';
             }
         }, this);
         this.relatedDisplayed = this.related.filter(function (item) { return item.displayed(); });
@@ -47,7 +51,7 @@ define([
         if (!this.loaded() && !this.loading()) {
             this.errored(false);
             this.loading(true);
-            this.loader.get(this.uri.replace(/^https?:\/\//, ''))
+            this.loader.get(this.uri)
              .then(_.bind(this.onLoaded, this), _.bind(this.onError, this));
          }
     };
