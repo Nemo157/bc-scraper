@@ -7,19 +7,12 @@ define([
     UserScraper.prototype.scrape = function (html) {
         var parser = new DOMParser();
         var doc = parser.parseFromString(html, "text/html");
+        var data = JSON.parse(doc.getElementById('pagedata').dataset.blob);
 
-        var name = doc.getElementsByClassName('fan-name')[0].innerText.trim();
-        var collectionData = [].find.call(doc.getElementsByTagName('script'), function (script) {
-            return script.innerText.match(/var CollectionData =/);
-        });
-        var details = JSON.parse(collectionData.innerText.match(/var CollectionData = \{\n\s*item_details: (\{(?:.*?)\})(?:,\n\s*redownload_urls: null\n\};|\n\};)/m)[1]);
-        var albums = Object.keys(details).map(function (key) {
-            return details[key].item_url
-        });
-        return {
-            name: name,
-            collected: albums,
-        };
+        var name = data.fan_data.username;
+        var collected = Object.values(data.item_cache.collection).map(item => item.item_url);
+
+        return { name, collected };
     };
 
     return UserScraper;

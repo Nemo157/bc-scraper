@@ -15,11 +15,7 @@ define([
         var fans = JSON.parse(collectorsData)['thumbs'].map(function (fan) {
           return 'https://bandcamp.com/' + fan.username;
         });
-        return {
-          title: title,
-          artist: artist,
-          fans: fans,
-        };
+        return { title, artist, fans };
     };
 
     return AlbumScraper;

@@ -16,7 +16,7 @@ define([
             }
         }
         return new Promise(_.bind(function (resolve, error) {
-            fetch('https://cors-anywhere.herokuapp.com/https://' + uri)
+            fetch('https://cors-anywhere.herokuapp.com/http://' + uri)
                 .then(res => res.text())
                 .then(
                   _.bind(function (html) {
