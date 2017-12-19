@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>bc-scraper</title>
@@ -6,12 +7,31 @@
     <link href='https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.2.0/css/amelia/bootstrap.min.css' rel='stylesheet'>
     <script data-main='app' src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
   </head>
+
   <body>
-    <nav class='navbar navbar-default navbar-static-top' id='navbar' role='navigation'>
-      <div class='navbar-header'>
-        <a class='col-lg-2 navbar-brand' href='/'>bc-scraper</a>
-        <form class='navbar-form'>
-          <div class='navbar-form-group col-lg-offset-4 col-lg-6 search'>
+    <div class='col-md-9 col-sm-8 col-xs-6' data-bind="template: { name: 'canvas-template', data: canvas }" id='container'></div>
+
+    <div class='col-md-3 col-sm-4 col-xs-6'>
+      <div class='row panel' data-bind="template: { name: 'nav-template' }" id='nav'></div>
+      <div class='row panel panel-info' data-bind="template: { name: 'performance-template', data: stats }" id='performance'></div>
+      <div class='row panel' data-bind="template: { name: 'settings-template', data: settings }" id='settings'></div>
+    </div>
+
+    <script id='canvas-template' type='text/html'>
+      <div data-bind='style: { height: height, width: width }, event: { mouseup: onMouseUp, mousemove: onMouseMove }' id='base'>
+        <div data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }" id='offset'>
+          <div class='items' data-bind="template: { name: 'item-template', foreach: items }"></div>
+        </div>
+      </div>
+    </script>
+
+    <script id='nav-template' type='text/html'>
+      <div class='panel-heading'>
+        <h4 class='panel-title'>bc-scraper</h4>
+      </div>
+      <div class='panel-body'>
+        <form>
+          <div class='form-group search'>
             <div class='input-group'>
               <input class='form-control' data-bind='value: search' placeholder='Paste bandcamp url' type='text'>
               <span class='input-group-btn'>
@@ -21,28 +41,8 @@
           </div>
         </form>
       </div>
-    </nav>
-    <a class='pull-left text-primary' data-target='#settings' data-toggle='collapse' href='#'>
-      <span class='glyphicon glyphicon-wrench'></span>
-    </a>
-    <a class='pull-right text-primary' data-target='#performance' data-toggle='collapse' href='#'>
-      <span class='glyphicon glyphicon-info-sign'></span>
-    </a>
-    <div class='clearfix'></div>
-    <div class='col-md-3 col-sm-4 col-xs-6'>
-      <div class='panel collapse' data-bind="template: { name: 'settings-template', data: settings }" id='settings'></div>
-    </div>
-    <div class='col-lg-offset-7 col-lg-2 col-md-offset-6 col-md-3 col-sm-offset-4 col-sm-4 col-xs-6'>
-      <div class='panel panel-info collapse' data-bind="template: { name: 'performance-template', data: stats }" id='performance'></div>
-    </div>
-    <div data-bind="template: { name: 'canvas-template', data: canvas }" id='container'></div>
-    <script id='canvas-template' type='text/html'>
-      <div data-bind='style: { height: height, width: width }, event: { mouseup: onMouseUp, mousemove: onMouseMove }' id='base'>
-        <div data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }" id='offset'>
-          <div class='items' data-bind="template: { name: 'item-template', foreach: items }"></div>
-        </div>
-      </div>
     </script>
+
     <script id='performance-template' type='text/html'>
       <div class='panel-heading'>
         <h4 class='panel-title'>Stats</h4>
@@ -76,6 +76,7 @@
         </div>
       </div>
     </script>
+
     <script id='settings-template' type='text/html'>
       <div class='panel-heading'>
         <h4 class='panel-title'>Settings</h4>
@@ -129,6 +130,7 @@
         </form>
       </div>
     </script>
+
     <script id='item-template' type='text/html'>
       <div class='item' data-bind="style: { position: 'absolute', webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)' }, event: { mouseover: onMouseOver, mouseout: onMouseOut, mousedown: $parent.onMouseDown }">
         <a data-bind='click: load, if: !loaded() &amp;&amp; !loading() &amp;&amp; errored(), tooltip: { title: error(), container: &#x0027;body&#x0027; }' href='#'>
@@ -144,6 +146,7 @@
         </div>
       </div>
     </script>
+
     <script id='item-popover-template' type='text/html'>
       <ul class='nav nav-pills nav-stacked'>
         <li data-bind='if: loaded'>
