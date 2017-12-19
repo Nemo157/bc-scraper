@@ -1,7 +1,7 @@
 requirejs.config({
     paths: {
         jquery: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min',
-        bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min',
+        bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min',
         lodash: 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min',
         fabric: 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min',
         postal: 'https://cdnjs.cloudflare.com/ajax/libs/postal.js/0.8.5/postal.min',
