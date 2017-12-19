@@ -15,20 +15,22 @@ define([
               return Promise.resolve(cached);
             }
         }
-        return Promise(_.bind(function (resolve, error) {
-            $.get('http://' + uri)
-                .done(_.bind(function (html) {
-                    try {
-                        var data = this.scraper.scrape(html);
-                        jStorage.set('bc-' + this.type + ':' + uri, data);
-                        resolve(data);
-                    } catch (err) {
-                        error(err);
-                    }
-                }, this))
-                .fail(function (err) {
-                    error(err);
-                });
+        return new Promise(_.bind(function (resolve, error) {
+            fetch('https://cors-anywhere.herokuapp.com/https://' + uri)
+                .then(res => res.text())
+                .then(
+                  _.bind(function (html) {
+                      try {
+                          var data = this.scraper.scrape(html);
+                          jStorage.set('bc-' + this.type + ':' + uri, data);
+                          resolve(data);
+                      } catch (err) {
+                          error(err);
+                      }
+                  }, this),
+                  function (err) {
+                      error(err);
+                  });
         }, this));
     };
 
