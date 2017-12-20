@@ -8,9 +8,15 @@ define([
         this.items = [];
         this.settings = settings;
         this.stats = stats;
+        this.times = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         this.worker.addRepeating(_.bind(function () {
             if (this.settings.runSimulation()) {
+                var start = window.performance.now();
                 this.simulate();
+                var end = window.performance.now();
+                this.times.shift();
+                this.times.push(end - start);
+                this.stats.simulationTime(this.times.reduce((a, i) => a + i, 0).toFixed(0));
             }
         }, this));
     }

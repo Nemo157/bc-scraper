@@ -12,12 +12,14 @@ define([
         repulsion: 10,
         displacement: 0,
         updateLayout: true,
-        runSimulation: true
+        runSimulation: true,
     });
     var stats = new Settings('stats', {
         entities: 0,
         processedLastFrame: 0,
-        remainingItems: 0
+        remainingItems: 0,
+        layoutTime: 0,
+        simulationTime: 0,
     });
     settings.load();
 
@@ -27,7 +29,7 @@ define([
         worker: worker,
         settings: settings,
         stats: stats,
-        canvas: new Canvas(worker, settings),
+        canvas: new Canvas(worker, settings, stats),
         simulation: new Simulation(worker, settings, stats),
         cache: new Cache(worker),
         search: ko.observable(),
