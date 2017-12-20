@@ -24,8 +24,8 @@ define([
 
         this.onMouseDown = _.bind(function (item) {
             this.mouseDown = true;
-            this.lastX = event.pageX;
-            this.lastY = event.pageY;
+            this.lastX = event.screenX;
+            this.lastY = event.screenY;
         }, this);
 
         this.onMouseUp = _.bind(function (item) {
@@ -46,9 +46,9 @@ define([
             if (this.currentHeldItem) {
                 this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top());
             } else if (this.mouseDown) {
-                this.panBy(this.lastX - event.pageX, this.lastY - event.pageY);
-                this.lastX = event.pageX;
-                this.lastY = event.pageY;
+                this.panBy(this.lastX - event.screenX, this.lastY - event.screenY);
+                this.lastX = event.screenX;
+                this.lastY = event.screenY;
             }
         }, this);
     }
