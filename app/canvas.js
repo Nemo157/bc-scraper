@@ -46,10 +46,7 @@ define([
             if (this.currentHeldItem) {
                 this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top());
             } else if (this.mouseDown) {
-                if (this.lastX && this.lastY)
-                {
-                    this.panBy(this.lastX - event.pageX, this.lastY - event.pageY);
-                }
+                this.panBy(this.lastX - event.pageX, this.lastY - event.pageY);
                 this.lastX = event.pageX;
                 this.lastY = event.pageY;
             }
