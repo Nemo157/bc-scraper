@@ -97,6 +97,7 @@ input[type=checkbox]:checked + label:before {
 
 #canvas {
     flex-grow: 1;
+    overflow: hidden;
 }
 
 #offset {
