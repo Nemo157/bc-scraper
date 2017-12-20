@@ -10,7 +10,7 @@
 
   <body>
     <!-- ko with: canvas -->
-    <div id='canvas' data-bind='event: { mouseup: onMouseUp, mousemove: onMouseMove }'>
+    <div id='canvas' data-bind='event: { mousedown: onMouseDown, mouseup: onMouseUp, mousemove: onMouseMove }'>
       <div id='offset' data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }">
         <div data-bind="template: { name: 'icon', foreach: items }"></div>
       </div>
@@ -87,7 +87,7 @@
           event: {
             mouseover: (e) => $root.hovered(e) && onMouseOver(e),
             mouseout: onMouseOut,
-            mousedown: (e) => $root.clicked(e) && $parent.onMouseDown(e),
+            mousedown: (e) => $root.clicked(e) && $parent.onItemMouseDown(e),
           }">
         <a data-bind='click: load, if: !loaded() && !loading() && errored(), attr: { title: error }' href='#'>
           <i class='fa fa-exclamation-triangle'></i>

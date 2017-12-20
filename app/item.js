@@ -116,7 +116,7 @@ define([
     Item.prototype.onMouseMove = function (data, event, canvasLeft, canvasTop) {
         if (this.mouseDown()) {
             this.x(this.last_pos.x = this.pos.x = event.pageX - canvasLeft - 8);
-            this.y(this.last_pos.y = this.pos.y = event.pageY - canvasTop - 8);
+            this.y(this.last_pos.y = this.pos.y = event.pageY - canvasTop - 24);
         }
     };
 

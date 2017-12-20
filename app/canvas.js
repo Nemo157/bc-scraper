@@ -23,21 +23,35 @@ define([
         }, this));
 
         this.onMouseDown = _.bind(function (item) {
-            this.onMouseUp();
-            item.onMouseDown();
-            this.currentHeldItem = item;
+            this.mouseDown = true;
+            this.lastX = event.pageX;
+            this.lastY = event.pageY;
         }, this);
 
         this.onMouseUp = _.bind(function (item) {
+            this.mouseDown = false;
             if (this.currentHeldItem) {
                 this.currentHeldItem.onMouseUp();
                 this.currentHeldItem = null;
             }
         }, this);
 
+        this.onItemMouseDown = _.bind(function (item) {
+            this.onMouseUp();
+            item.onMouseDown();
+            this.currentHeldItem = item;
+        }, this);
+
         this.onMouseMove = _.bind(function (data, event) {
             if (this.currentHeldItem) {
                 this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top());
+            } else if (this.mouseDown) {
+                if (this.lastX && this.lastY)
+                {
+                    this.panBy(this.lastX - event.pageX, this.lastY - event.pageY);
+                }
+                this.lastX = event.pageX;
+                this.lastY = event.pageY;
             }
         }, this);
     }
