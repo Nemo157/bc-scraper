@@ -11,7 +11,7 @@
   <body>
     <!-- ko with: canvas -->
     <div id='canvas' data-bind='event: { mouseup: onMouseUp, mousemove: onMouseMove }'>
-      <div data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }" id='offset'>
+      <div id='offset' data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }">
         <div data-bind="template: { name: 'icon', foreach: items }"></div>
       </div>
     </div>

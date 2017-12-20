@@ -99,6 +99,10 @@ input[type=checkbox]:checked + label:before {
     flex-grow: 1;
 }
 
+#offset {
+    display: inline-block;
+}
+
 #panel {
     display: flex;
     align-items: stretch;
