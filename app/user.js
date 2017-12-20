@@ -33,6 +33,7 @@ define([
 
     User.prototype.type = 'user';
     User.prototype.relatedType = 'album';
+    User.prototype.relatedRelatedType = 'fan';
     User.prototype.iconClass = 'fa-user';
     User.prototype.loader = new Loader('user', new UserScraper());
 

@@ -35,6 +35,7 @@ define([
 
     Album.prototype.type = 'album';
     Album.prototype.relatedType = 'fan';
+    Album.prototype.relatedRelatedType = 'album';
     Album.prototype.iconClass = 'fa-headphones';
     Album.prototype.loader = new Loader('album', new AlbumScraper());
 

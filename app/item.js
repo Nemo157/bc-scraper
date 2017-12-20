@@ -40,7 +40,7 @@ define([
             }, []);
         }, this);
         this.relatedRelatedTypePluralized = ko.computed(function () {
-            return this.type + (this.relatedUndisplayedOfRelatedDisplayed().length > 1 ? 's' : '');
+            return this.relatedRelatedType + (this.relatedUndisplayedOfRelatedDisplayed().length > 1 ? 's' : '');
         }, this);
         this.relatedTypePluralized = ko.computed(function () {
             return this.relatedType + (this.relatedUndisplayed().length > 1 ? 's' : '');
