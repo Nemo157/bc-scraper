@@ -32,17 +32,32 @@ define([
               ? "Errored"
               : "Loading...";
         }, this);
+        this.relatedDisplayed = this.related.filter(function (item) { return item.displayed(); });
+        this.relatedUndisplayed = this.related.filter(function (item) { return !item.displayed(); });
+        this.relatedUndisplayedOfRelatedDisplayed = ko.computed(function () {
+            return this.relatedDisplayed().reduce(function (acc, related) {
+              return acc.concat(related.relatedUndisplayed());
+            }, []);
+        }, this);
+        this.relatedRelatedTypePluralized = ko.computed(function () {
+            return this.type + (this.relatedUndisplayedOfRelatedDisplayed().length > 1 ? 's' : '');
+        }, this);
+        this.relatedTypePluralized = ko.computed(function () {
+            return this.relatedType + (this.relatedUndisplayed().length > 1 ? 's' : '');
+        }, this);
         this.relatedClass = ko.computed(function () {
-            if (this.related().length > 20) {
+            if (this.relatedUndisplayed().length > 20) {
                 return 'fa-th';
             } else {
                 return 'fa-th-large';
             }
         }, this);
-        this.relatedDisplayed = this.related.filter(function (item) { return item.displayed(); });
-        this.relatedUndisplayed = this.related.filter(function (item) { return !item.displayed(); });
-        this.relatedTypePluralized = ko.computed(function () {
-            return this.relatedType + (this.relatedUndisplayed().length > 1 ? 's' : '');
+        this.relatedRelatedClass = ko.computed(function () {
+            if (this.relatedUndisplayedOfRelatedDisplayed().length > 20) {
+                return 'fa-th';
+            } else {
+                return 'fa-th-large';
+            }
         }, this);
         this.error = ko.observable();
     };
@@ -83,6 +98,12 @@ define([
             this.worker.enqueue(_.bind(expandItem, this, items[i]), 1);
         }
         this.worker.enqueue(_.bind(this.expanding, this, false), 1);
+    };
+
+    Item.prototype.expandRelated = function () {
+        for (var related of this.relatedDisplayed()) {
+          related.expand();
+        }
     };
 
     Item.prototype.moveNear = function (pos) {

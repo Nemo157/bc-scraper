@@ -125,6 +125,16 @@
             <span data-bind='text: relatedTypePluralized()'></span>
           </a>
         </p>
+        <p data-bind='if: relatedUndisplayedOfRelatedDisplayed().length > 0'>
+          <a data-bind='click: expandRelated' data-dismiss='popover' href='#'>
+            <i class='fa' data-bind='css: relatedRelatedClass'></i>
+            Expand
+            <span data-bind='text: relatedUndisplayedOfRelatedDisplayed().length'></span>
+            <span data-bind='text: relatedRelatedTypePluralized()'></span>
+            of my
+            <span data-bind='text: relatedType + "s"'></span>
+          </a>
+        </p>
       <!-- /ko -->
     </script>
   </body>
