@@ -22,7 +22,7 @@ define([
             }
         }, this));
 
-        this.onMouseDown = _.bind(function (item) {
+        this.onMouseDown = _.bind(function (item, event) {
             this.mouseDown = true;
             this.lastX = event.screenX;
             this.lastY = event.screenY;
