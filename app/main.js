@@ -33,8 +33,8 @@ define([
         simulation: new Simulation(settings, stats),
         cache: new Cache(worker),
         search: ko.observable(),
-        hovered: ko.observable(),
         clicked: ko.observable(),
+        mouseOvered: ko.observable(),
         doSearch: function () {
             var item;
             if (this.search().match(/https?:\/\/bandcamp\.com\/.*/i)) {
@@ -42,6 +42,7 @@ define([
             } else {
                 item = this.cache.createAlbum(this.canvas, this.simulation, this.search());
             }
+            item.locked(true);
             item.bound = true;
             item.load();
             this.canvas.clear();
@@ -52,6 +53,7 @@ define([
         }
     };
 
+    app.selection = ko.computed(() => app.clicked() || app.mouseOvered());
     app.canvas.setSize($('#canvas').width(), $('#canvas').height());
 
     $(window).on('resize', function (event) {
@@ -62,6 +64,18 @@ define([
         app.canvas.panBy(event.originalEvent.deltaX, event.originalEvent.deltaY);
         event.preventDefault();
     });
+
+    app.onItemClick = function (item, event) {
+        app.clicked(item);
+    };
+
+    app.onCanvasClick = function () {
+        app.clicked(null);
+    };
+
+    app.onItemMouseOver = function (item) {
+        app.mouseOvered(item);
+    };
 
     ko.applyBindings(app);
 

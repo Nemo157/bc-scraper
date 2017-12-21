@@ -10,7 +10,8 @@
 
   <body>
     <!-- ko with: canvas -->
-    <div id='canvas' data-bind='event: { mousedown: onMouseDown, mouseup: onMouseUp, mousemove: onMouseMove }'>
+    <div id='canvas' data-bind='event: { mousedown: onMouseDown, mouseup:
+      onMouseUp, mousemove: onMouseMove, click: $root.onCanvasClick }'>
       <div id='offset' data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }">
         <div data-bind="template: { name: 'icon', foreach: items }"></div>
       </div>
@@ -41,7 +42,7 @@
               <label for='attraction'>Attraction</label>
             </dt>
             <dd>
-              <input data-bind='value: attraction' id='attraction' type='number'>
+              <input data-bind='value: attraction' id='attraction' type='number' step='0.01'>
             </dd>
             <dt>
               <label for='repulsion'>Repulsion</label>
@@ -53,7 +54,7 @@
               <label for='damping'>Damping</label>
             </dt>
             <dd>
-              <input data-bind='value: damping' id='damping' type='number'>
+              <input data-bind='value: damping' id='damping' type='number' step='0.1'>
             </dd>
           </dl>
           <input data-bind='checked: updateLayout' id='update-layout' type='checkbox'>
@@ -78,8 +79,7 @@
         </dl>
       </div>
 
-      <div id='hovered' data-bind="template: { name: 'details', data: hovered, if: hovered }"></div>
-      <div id='clicked' data-bind="template: { name: 'details', data: clicked, if: clicked }"></div>
+      <div id='selection' data-bind="template: { name: 'details', data: selection, if: selection }"></div>
     </div>
 
     <script id='icon' type='text/html'>
@@ -87,12 +87,17 @@
           style: {
             position: 'absolute',
             webkitTransform: 'translate3d(' + x() + 'px, ' + y() + 'px, 0)',
+            color: $root.clicked() == $data ? 'red' : locked() ? 'green' : 'inherit',
           },
           event: {
-            mouseover: (e) => $root.hovered(e) && onMouseOver(e),
+            mouseover: (e) => ($root.onItemMouseOver(e), onMouseOver(e)),
             mouseout: onMouseOut,
-            mousedown: (e) => $root.clicked(e) && $parent.onItemMouseDown(e),
-          }">
+            click: $root.onItemClick,
+            dblclick: onDoubleClick,
+            mousedown: $parent.onItemMouseDown,
+          },
+          clickBubble: false
+        ">
         <a data-bind='click: load, if: !loaded() && !loading() && errored(), attr: { title: error }' href='#'>
           <i class='fa fa-exclamation-triangle'></i>
         </a>

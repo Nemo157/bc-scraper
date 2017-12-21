@@ -60,6 +60,7 @@ define([
             }
         }, this);
         this.error = ko.observable();
+        this.locked = ko.observable(false);
     };
 
     Item.prototype.load = function () {
@@ -113,7 +114,7 @@ define([
 
     Item.prototype.onMouseOver = function () {
         if (!this.mouseOver()) {
-            this.originalBound = this.bound;
+            this.mouseDelta = 0;
             this.bound = true;
             this.mouseOver(true);
         }
@@ -121,7 +122,7 @@ define([
 
     Item.prototype.onMouseOut = function () {
         if (this.mouseOver() && !this.mouseDown()) {
-            this.bound = this.originalBound;
+            this.bound = this.locked();
             this.mouseOver(false);
         }
     };
@@ -130,14 +131,27 @@ define([
         this.mouseDown(true);
     };
 
+    Item.prototype.onDoubleClick = function () {
+        this.locked(!this.locked());
+        this.bound = this.locked();
+    };
+
     Item.prototype.onMouseUp = function () {
         this.mouseDown(false);
+        if (!this.locked() && this.mouseDelta > 0.5) {
+          this.locked(true);
+          this.bound = true;
+        }
+        this.mouseDelta = 0;
     };
 
     Item.prototype.onMouseMove = function (data, event, canvasLeft, canvasTop) {
         if (this.mouseDown()) {
-            this.x(this.last_pos.x = this.pos.x = event.pageX - canvasLeft - 8);
-            this.y(this.last_pos.y = this.pos.y = event.pageY - canvasTop - 24);
+            var x = event.pageX - canvasLeft - 8;
+            var y = event.pageY - canvasTop - 24;
+            this.mouseDelta += Math.abs(this.x() - x) + Math.abs(this.y() - y);
+            this.x(this.last_pos.x = this.pos.x = x);
+            this.y(this.last_pos.y = this.pos.y = y);
         }
     };
 
