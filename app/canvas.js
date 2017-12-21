@@ -3,8 +3,7 @@ define([
     'jquery',
     'lodash'
 ], function (ko, $, _) {
-    function Canvas(worker, settings, stats) {
-        this.worker = worker;
+    function Canvas(settings, stats) {
         this.settings = settings;
         this.stats = stats;
         this.width = ko.observable(0);
@@ -18,7 +17,7 @@ define([
         this.top = ko.observable(0);
         this.times = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        this.worker.addRepeating(_.bind(function () {
+        this.onFrame = _.bind(function () {
             if (this.settings.updateLayout()) {
                 var start = window.performance.now();
                 this.relayout();
@@ -27,7 +26,9 @@ define([
                 this.times.push(end - start);
                 this.stats.layoutTime(this.times.reduce((a, i) => a + i, 0).toFixed(0));
             }
-        }, this));
+            window.requestAnimationFrame(this.onFrame);
+        }, this);
+        window.requestAnimationFrame(this.onFrame);
 
         this.onMouseDown = _.bind(function (item, event) {
             this.mouseDown = true;

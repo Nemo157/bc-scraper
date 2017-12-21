@@ -3,13 +3,12 @@ define([
     'jquery',
     'lodash'
 ], function (ko, $, _) {
-    function Simulation(worker, settings, stats) {
-        this.worker = worker;
+    function Simulation(settings, stats) {
         this.items = [];
         this.settings = settings;
         this.stats = stats;
         this.times = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        this.worker.addRepeating(_.bind(function () {
+        window.setInterval(_.bind(function () {
             if (this.settings.runSimulation()) {
                 var start = window.performance.now();
                 this.simulate();
@@ -18,7 +17,7 @@ define([
                 this.times.push(end - start);
                 this.stats.simulationTime(this.times.reduce((a, i) => a + i, 0).toFixed(0));
             }
-        }, this));
+        }, this), 1000 / 20);
     }
 
     Simulation.prototype.clear = function () {
