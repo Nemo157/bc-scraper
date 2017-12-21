@@ -1,11 +1,14 @@
 define([
     'lodash',
     'jquery',
-    'jStorage'
-], function (_, $, jStorage) {
+    'jStorage',
+    'Bottleneck'
+], function (_, $, jStorage, Bottleneck) {
     var Loader = function (type, scraper) {
         this.type = type;
         this.scraper = scraper;
+        this.limiter = new Bottleneck(2, 500);
+        this.fetch = this.limiter.schedule.bind(this.limiter, fetch.bind(window));
     };
 
     Loader.prototype.get = function (uri, allowCached) {
@@ -16,7 +19,8 @@ define([
             }
         }
         return new Promise(_.bind(function (resolve, error) {
-            fetch('https://cors-anywhere.herokuapp.com/http://' + uri)
+            var url = 'https://cors-anywhere.herokuapp.com/http://' + uri;
+            this.fetch(url)
                 .then(res => res.text())
                 .then(
                   _.bind(function (html) {
