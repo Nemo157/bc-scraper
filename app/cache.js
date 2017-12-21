@@ -9,7 +9,7 @@ define([
     }
 
     Cache.prototype.createItem = function (constructor, uri, canvas, simulation) {
-        uri = uri.replace(/^https?:\/\//, '');
+        uri = uri.toLowerCase().replace(/^https?:\/\//, '');
         if (!this.collection.hasOwnProperty(uri)) {
             this.collection[uri] = new constructor(uri, this, this.worker, canvas, simulation);
         }
