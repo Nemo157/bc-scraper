@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>bc-scraper</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
     <link href='style.css' rel='stylesheet'>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet'>
     <script data-main='app' src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
@@ -10,8 +10,17 @@
 
   <body>
     <!-- ko with: canvas -->
-    <div id='canvas' data-bind='event: { mousedown: onMouseDown, mouseup:
-      onMouseUp, mousemove: onMouseMove, click: $root.onCanvasClick }'>
+    <div id='canvas' data-bind='
+        event: {
+          touchstart: onTouchStart,
+          touchmove: onTouchMove,
+          touchend: onMouseUp,
+          mousedown: onMouseDown,
+          mouseup: onMouseUp,
+          mousemove: onMouseMove,
+          click: $root.onCanvasClick,
+        }
+      '>
       <div id='offset' data-bind="style: { webkitTransform: 'translate3d(' + left() + 'px, ' + top() + 'px, 0)' }">
         <div data-bind="template: { name: 'icon', foreach: items }"></div>
       </div>
@@ -90,6 +99,7 @@
             color: $root.clicked() == $data ? 'red' : locked() ? 'green' : 'inherit',
           },
           event: {
+            touchstart: (e) => $root.clicked(e) && $parent.onItemMouseDown(e),
             mouseover: (e) => ($root.onItemMouseOver(e), onMouseOver(e)),
             mouseout: onMouseOut,
             click: $root.onItemClick,

@@ -77,6 +77,18 @@ define([
         app.mouseOvered(item);
     };
 
+    var lastY;
+    $(window).on('touchmove', function (event) {
+        event.preventDefault();
+    });
+    $('#panel').on('touchstart', function (event) {
+        lastY = event.originalEvent.touches[0].pageY;
+    });
+    $('#panel').on('touchmove', function (event) {
+        event.currentTarget.scrollTop += (lastY - event.originalEvent.touches[0].pageY);
+        lastY = event.originalEvent.touches[0].pageY;
+    });
+
     ko.applyBindings(app);
 
     return app;

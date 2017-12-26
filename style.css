@@ -2,6 +2,7 @@ html {
     height: 100%;
     color: #839496;
     background-color: #002b36;
+    overflow: hidden;
 }
 
 body {
@@ -9,6 +10,7 @@ body {
     align-items: stretch;
     height: 100%;
     margin: 0px;
+    overflow: hidden;
 }
 
 h1, h2, h3, h4, h5 {
@@ -111,6 +113,9 @@ input[type=checkbox]:checked + label:before {
     flex-basis: 250px;
     height: 100%;
     background-color: #073642;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 #panel div {

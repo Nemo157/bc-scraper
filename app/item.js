@@ -145,10 +145,10 @@ define([
         this.mouseDelta = 0;
     };
 
-    Item.prototype.onMouseMove = function (data, event, canvasLeft, canvasTop) {
+    Item.prototype.onMove = function (pos, canvasLeft, canvasTop) {
         if (this.mouseDown()) {
-            var x = event.pageX - canvasLeft - 8;
-            var y = event.pageY - canvasTop - 24;
+            var x = pos.x - canvasLeft - 8;
+            var y = pos.y - canvasTop - 24;
             this.mouseDelta += Math.abs(this.x() - x) + Math.abs(this.y() - y);
             this.x(this.last_pos.x = this.pos.x = x);
             this.y(this.last_pos.y = this.pos.y = y);

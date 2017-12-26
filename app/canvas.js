@@ -36,6 +36,12 @@ define([
             this.lastY = event.screenY;
         }, this);
 
+        this.onTouchStart = _.bind(function (item, event) {
+            this.mouseDown = true;
+            this.lastX = event.touches[0].pageX;
+            this.lastY = event.touches[0].pageY;
+        }, this);
+
         this.onMouseUp = _.bind(function (item) {
             this.mouseDown = false;
             if (this.currentHeldItem) {
@@ -51,14 +57,22 @@ define([
         }, this);
 
         this.onMouseMove = _.bind(function (data, event) {
-            if (this.currentHeldItem) {
-                this.currentHeldItem.onMouseMove(this.currentHeldItem, event, this.left(), this.top());
-            } else if (this.mouseDown) {
-                this.panBy(this.lastX - event.screenX, this.lastY - event.screenY);
-                this.lastX = event.screenX;
-                this.lastY = event.screenY;
-            }
+            this.onMove({ x: event.screenX, y: event.screenY });
         }, this);
+
+        this.onTouchMove = _.bind(function (data, event) {
+            this.onMove({ x: event.touches[0].pageX, y: event.touches[0].pageY });
+        }, this);
+    }
+
+    Canvas.prototype.onMove = function (pos) {
+        if (this.currentHeldItem) {
+            this.currentHeldItem.onMove(pos, this.left(), this.top());
+        } else if (this.mouseDown) {
+            this.panBy(this.lastX - pos.x, this.lastY - pos.y);
+            this.lastX = pos.x;
+            this.lastY = pos.y;
+        }
     }
 
     Canvas.prototype.clear = function () {
