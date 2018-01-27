@@ -105,7 +105,8 @@
             color: $root.clicked() == $data ? 'red' : locked() ? 'green' : 'inherit',
           },
           event: {
-            touchstart: (e) => $root.clicked(e) && $parent.onItemMouseDown(e),
+            touchstart: (e) => (onMouseOver(e), $root.clicked(e), $parent.onItemMouseDown(e)),
+            touchend: onMouseOut,
             mouseover: (e) => ($root.onItemMouseOver(e), onMouseOver(e)),
             mouseout: onMouseOut,
             click: $root.onItemClick,
