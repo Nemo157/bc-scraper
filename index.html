@@ -39,6 +39,12 @@
             <button data-bind='click: doSearch' type='submit'>Load</button>
         </form>
 
+        <form>
+            <span style='display: block' data-bind='text: savedDescription'></span>
+            <button data-bind='click: save'>Save current state</button>
+            <button data-bind='click: load'>Load saved state</button>
+        </form>
+
         <!-- ko with: settings -->
         <form>
           <h2 style='display: flex'>

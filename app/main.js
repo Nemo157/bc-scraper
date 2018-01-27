@@ -36,6 +36,7 @@ define([
         search: ko.observable(),
         clicked: ko.observable(),
         mouseOvered: ko.observable(),
+        saved: ko.observable(),
         doSearch: function () {
             var item;
             if (this.search().match(/https?:\/\/bandcamp\.com\/.*/i)) {
@@ -51,11 +52,54 @@ define([
             this.canvas.add(item);
             this.simulation.add(item);
             this.canvas.panTo(0, 0);
-            jStorage.set('bc-saved-url', this.search());
+            jStorage.set('bc-last-url', this.search());
+        },
+        save: function () {
+            var state = {
+              root: this.simulation.items[0].uri,
+              items: this.simulation.items.map(item => ({ type: item.type, uri: item.uri, pos: item.pos, bound: item.bound })),
+            }
+            jStorage.set('bc-saved-state', state);
+            this.saved(state);
+        },
+        load: function () {
+            this.canvas.clear();
+            this.simulation.clear();
+            this.canvas.panTo(0, 0);
+            var items = this.saved().items;
+            var root = this.saved().root;
+            var expandItem = function (details) {
+                var item;
+                if (details.type === 'user') {
+                    item = this.cache.createUser(this.canvas, this.simulation, details.uri);
+                } else {
+                    item = this.cache.createAlbum(this.canvas, this.simulation, details.uri);
+                }
+                if (!item.displayed()) {
+                    item.last_pos.x = item.pos.x = details.pos.x;
+                    item.last_pos.y = item.pos.y = details.pos.y;
+                    this.canvas.add(item);
+                    this.simulation.add(item);
+                    item.load();
+                    item.bound = details.bound;
+                }
+            };
+            for (var i = 0; i < items.length; i++) {
+                this.worker.enqueue(_.bind(expandItem, this, items[i]), 1);
+            }
         }
     };
 
     app.selection = ko.computed(() => app.clicked() || app.mouseOvered());
+
+    app.savedDescription = ko.computed(() => {
+      if (app.saved()) {
+        return `${app.saved().items.length} entities from ${app.saved().root}`;
+      } else {
+        return 'No save yet';
+      }
+    });
+
     app.canvas.setSize($('#canvas').width(), $('#canvas').height());
 
     $(window).on('resize', function (event) {
@@ -93,11 +137,8 @@ define([
 
     ko.applyBindings(app);
 
-    let savedUrl = jStorage.get('bc-saved-url');
-    if (savedUrl) {
-        app.search(savedUrl);
-        app.doSearch();
-    }
+    app.search(jStorage.get('bc-last-url'));
+    app.saved(jStorage.get('bc-saved-state'));
 
     return app;
 });
