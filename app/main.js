@@ -1,11 +1,12 @@
 define([
     'knockout',
+    'jStorage',
     './canvas',
     './simulation',
     './cache',
     './worker',
     './settings'
-], function (ko, Canvas, Simulation, Cache, Worker, Settings) {
+], function (ko, jStorage, Canvas, Simulation, Cache, Worker, Settings) {
     var settings = new Settings('settings', {
         damping: 0.5,
         attraction: 0.01,
@@ -50,6 +51,7 @@ define([
             this.canvas.add(item);
             this.simulation.add(item);
             this.canvas.panTo(0, 0);
+            jStorage.set('bc-saved-url', this.search());
         }
     };
 
@@ -90,6 +92,12 @@ define([
     });
 
     ko.applyBindings(app);
+
+    let savedUrl = jStorage.get('bc-saved-url');
+    if (savedUrl) {
+        app.search(savedUrl);
+        app.doSearch();
+    }
 
     return app;
 });
