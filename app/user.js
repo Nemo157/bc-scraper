@@ -31,6 +31,13 @@ define([
         this.worker.enqueue(_.bind(Item.prototype.onLoaded, this, data));
     };
 
+    User.prototype.render = function (ctx) {
+        ctx.fillStyle = 'rgb(200, 0, 0)';
+        ctx.fillRect(this.pos.x - (this.width / 2), this.pos.y - (this.height / 2), this.width, this.height);
+    };
+
+    User.prototype.width = 20;
+    User.prototype.height = 20;
     User.prototype.type = 'user';
     User.prototype.relatedType = 'album';
     User.prototype.relatedRelatedType = 'fan';

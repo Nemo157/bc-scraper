@@ -26,7 +26,7 @@ define([
 
     var worker = new Worker(stats);
 
-    var app = {
+    var app = window.app = {
         worker: worker,
         settings: settings,
         stats: stats,
@@ -90,7 +90,20 @@ define([
         }
     };
 
-    app.selection = ko.computed(() => app.clicked() || app.mouseOvered());
+    var lastHeld, lastOver;
+    app.selection = ko.computed(() => {
+        if (app.canvas.currentHeldItem()) {
+            lastHeld = app.canvas.currentHeldItem();
+            return app.canvas.currentHeldItem();
+        } else if (app.canvas.currentOverItem()) {
+            lastOver = app.canvas.currentOverItem();
+            return app.canvas.currentOverItem();
+        } else if (lastHeld) {
+            return lastHeld;
+        } else if (lastOver) {
+            return lastOver;
+        }
+    });
 
     app.savedDescription = ko.computed(() => {
       if (app.saved()) {
@@ -110,18 +123,6 @@ define([
         app.canvas.panBy(event.originalEvent.deltaX, event.originalEvent.deltaY);
         event.preventDefault();
     });
-
-    app.onItemClick = function (item, event) {
-        app.clicked(item);
-    };
-
-    app.onCanvasClick = function () {
-        app.clicked(null);
-    };
-
-    app.onItemMouseOver = function (item) {
-        app.mouseOvered(item);
-    };
 
     var lastY;
     $(window).on('touchmove', function (event) {

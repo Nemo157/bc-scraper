@@ -112,9 +112,8 @@ define([
         this.y(this.last_pos.y = this.pos.y = Math.random() * 100 - 50 + pos.y);
     };
 
-    Item.prototype.onMouseOver = function () {
+    Item.prototype.onMouseOver = function (pos) {
         if (!this.mouseOver()) {
-            this.mouseDelta = 0;
             this.bound = true;
             this.mouseOver(true);
         }
@@ -127,8 +126,9 @@ define([
         }
     };
 
-    Item.prototype.onMouseDown = function () {
+    Item.prototype.onMouseDown = function (pos) {
         this.mouseDown(true);
+        this.mouseDownPos = pos;
     };
 
     Item.prototype.onDoubleClick = function () {
@@ -136,23 +136,30 @@ define([
         this.bound = this.locked();
     };
 
-    Item.prototype.onMouseUp = function () {
+    Item.prototype.onMouseUp = function (pos) {
+        var deltaX = pos.x - this.mouseDownPos.x;
+        var deltaY = pos.y - this.mouseDownPos.y;
+        var mouseDelta = Math.abs(deltaX) + Math.abs(deltaY);
         this.mouseDown(false);
-        if (!this.locked() && this.mouseDelta > 0.5) {
+        if (!this.locked() && mouseDelta > 0.5) {
           this.locked(true);
           this.bound = true;
         }
         this.mouseDelta = 0;
     };
 
-    Item.prototype.onMove = function (pos, canvasLeft, canvasTop) {
+    Item.prototype.onMove = function (pos) {
         if (this.mouseDown()) {
-            var x = pos.x - canvasLeft - 8;
-            var y = pos.y - canvasTop - 24;
-            this.mouseDelta += Math.abs(this.x() - x) + Math.abs(this.y() - y);
-            this.x(this.last_pos.x = this.pos.x = x);
-            this.y(this.last_pos.y = this.pos.y = y);
+            this.x(this.last_pos.x = this.pos.x = pos.x);
+            this.y(this.last_pos.y = this.pos.y = pos.y);
         }
+    };
+
+    Item.prototype.hitTest = function (pos) {
+        return pos.x > (this.pos.x - this.width / 2)
+            && pos.x < (this.pos.x + this.width / 2)
+            && pos.y > (this.pos.y - this.height / 2)
+            && pos.y < (this.pos.y + this.height / 2);
     };
 
     return Item;
