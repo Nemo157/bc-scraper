@@ -163,26 +163,25 @@ define([
     };
 
     Item.prototype.render = function (ctx) {
-        ctx.fillStyle = '#eee8d5';
+        var image;
+
+        if (this.loaded()) {
+            image = this.image;
+        } else if (this.loading()) {
+            image = this.loadingImage;
+        } else if (this.errored()) {
+            image = this.errorImage;
+        }
         ctx.drawImage(
-            this.image,
+            image,
             this.pos.x - (this.width / 2),
             this.pos.y - (this.height / 2),
             this.width,
             this.height);
-      /* TODO:
-        <a data-bind='click: load, if: !loaded() && !loading() && errored(), attr: { title: error }' href='#'>
-          <i class='fa fa-exclamation-triangle'></i>
-        </a>
-        <span data-bind='if: !loaded() && !errored()'>
-          <i class='fa fa-spin fa-spinner'></i>
-        </span>
-        <span data-bind='if: loaded, attr: { title: header }'>
-          <span class='fa' data-bind='css: iconClass'></span>
-        </a>
-      */
     };
 
+    Item.prototype.loadingImage = document.getElementById('loading-image');
+    Item.prototype.errorImage = document.getElementById('error-image');
     Item.prototype.width = 15;
     Item.prototype.height = 15;
 
